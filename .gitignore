@@ -1,0 +1,34 @@
+# Ignore all directories
+Ads/
+Calgary Innovates/
+Catapault/
+Clients + Projects/
+Condo Doc Review/
+Education/
+Images/
+Invoices/
+Leads/
+Podcast_assets/
+Sales Assistant w Dynamic SQL Database Query/
+Terrabot/
+Terrabot2/
+Voice Agent General/
+Webinar/
+Workshops & Seminars/
+
+# Ignore all zip files
+*.zip
+
+# Ignore specific large files if they are not part of the landing page
+# (You can add other specific files to ignore here)
+Tools Library - Tools.pdf
+
+# Explicitly DON'T ignore the landing page files, even if a broader rule matches
+!tire-shop-ai-landing.html
+!Logo.png
+!20250607_1318_Busy Tire Shop Chaos_simple_compose_01jx5x5gm7f3cr1q6rtzgfbjbj.png
+!new-era-ai-logo.png
+!cyborg-*.png
+
+# Explicitly include the Workshop Portal app so it is built on Render
+!Clients + Projects/Big Marble Farms/Workshop/Workshop Portal/** 

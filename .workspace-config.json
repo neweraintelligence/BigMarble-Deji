@@ -1,0 +1,67 @@
+{
+  "workspace": {
+    "name": "New Era AI",
+    "version": "1.0.0",
+    "description": "Multi-project workspace for AI solutions",
+    "root_repository": "https://github.com/neweraintelligence/Pitstop-AI-CRM.git"
+  },
+  "projects": {
+    "internal": {
+      "background-agents": {
+        "path": "internal-projects/background-agents",
+        "repository": null,
+        "status": "development"
+      },
+      "shared-libraries": {
+        "path": "internal-projects/shared-libraries", 
+        "repository": null,
+        "status": "active"
+      }
+    },
+    "clients": {
+      "big-marble-farms": {
+        "path": "client-projects/big-marble-farms",
+        "repository": "https://github.com/neweraintelligence/big-marble-farms.git",
+        "status": "active",
+        "type": "educational-portal"
+      },
+      "pitstop-ai": {
+        "path": "client-projects/pitstop-ai",
+        "repository": "https://github.com/neweraintelligence/pitstop-ai.git",
+        "status": "active", 
+        "type": "crm-system"
+      },
+      "ok-tire": {
+        "path": "client-projects/ok-tire",
+        "repository": "https://github.com/neweraintelligence/ok-tire.git",
+        "status": "active",
+        "type": "voice-analytics"
+      },
+      "dpa": {
+        "path": "client-projects/dpa",
+        "repository": "https://github.com/neweraintelligence/dpa-invoice.git",
+        "status": "development",
+        "type": "invoice-processing"
+      },
+      "christie-gardens": {
+        "path": "client-projects/christie-gardens",
+        "repository": "https://github.com/neweraintelligence/christie-gardens.git", 
+        "status": "active",
+        "type": "voice-system"
+      }
+    }
+  },
+  "background_agents": {
+    "workspace_access": true,
+    "cross_project_access": [
+      "client-projects/big-marble-farms",
+      "client-projects/pitstop-ai", 
+      "client-projects/ok-tire"
+    ]
+  },
+  "scripts": {
+    "sync_all": "scripts/sync-repos.ps1",
+    "status_check": "scripts/project-status.ps1",
+    "new_project": "scripts/create-project.ps1"
+  }
+} 

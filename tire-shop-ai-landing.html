@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Receptionist for Tire & Mechanical Shops | Never Miss a Call</title>
+    <meta name="description" content="24/7 AI receptionist for tire shops. Book appointments, answer FAQs, and upsell services automatically. Never miss another customer call.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <style>
+        :root {
+            --black: #0a0f0e;
+            --teal: #00c0a0;
+            --white: #ffffff;
+            --grey: #d0d0d0;
+            --dark-overlay: rgba(12, 20, 19, 0.75);
+            --teal-glow: rgba(0, 192, 160, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--black);
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            max-width: 1440px;
+            margin: 0 auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--teal);
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--teal);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--white);
+        }
+
+        .brand-tagline {
+            font-size: 0.8rem;
+            font-weight: 400;
+            font-style: italic;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--teal);
+        }
+
+        .nav-links a:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--teal);
+        }
+
+        .phone-cta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .phone-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phone-number:hover {
+            color: var(--teal);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 2px solid var(--teal);
+            color: var(--teal);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ghost:hover {
+            background: var(--teal);
+            color: var(--black);
+            box-shadow: 0 0 20px var(--teal-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 80px 5%;
+            max-width: 1440px;
+            margin: 0 auto;
+            text-align: center;
+            background: linear-gradient(135deg, var(--black) 0%, #1a2f2a 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="grad" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%2300c0a0;stop-opacity:0.1"/><stop offset="100%" style="stop-color:%2300c0a0;stop-opacity:0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23grad)"/><circle cx="800" cy="300" r="150" fill="url(%23grad)"/><circle cx="600" cy="700" r="120" fill="url(%23grad)"/></svg>') no-repeat center center;
+            background-size: cover;
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            flex: 0 1 auto;
+            max-width: 650px;
+        }
+
+        .hero-image {
+            flex: 0 1 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .hero h1 {
+            font-size: 3.25rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--white) 0%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--grey);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: var(--black);
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 192, 160, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 192, 160, 0.4);
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 5%;
+            background: linear-gradient(135deg, var(--black) 0%, #0f1615 100%);
+        }
+
+        .how-it-works .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .how-it-works h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--white);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            position: relative;
+        }
+
+        .step {
+            position: relative;
+            background: var(--dark-overlay);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 192, 160, 0.25);
+            border-radius: 16px;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            overflow: hidden;
+            text-align: center;
+            padding-top: 2rem;
+            padding-bottom: 1rem;
+        }
+        .step:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 0 25px var(--teal-glow);
+        }
+        .step.active {
+            box-shadow: 0 0 35px var(--teal-glow);
+            border-color: var(--teal);
+        }
+
+        .step-index {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+            transition: color 0.3s ease;
+            z-index: 5;
+        }
+
+        .step:hover .step-index {
+            color: var(--teal);
+        }
+
+        /* hologram overlay */
+        .step-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 192, 160, 0.1);
+            backdrop-filter: blur(10px) saturate(150%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.45s ease;
+        }
+        .step:hover .step-overlay,
+        .step.active .step-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            transition: transform 0.5s ease;
+            color: var(--grey); /* Color for the SVG */
+        }
+
+        .step-number svg {
+            width: 100%;
+            height: 100%;
+            transition: fill 0.3s ease;
+        }
+
+        .step:hover .step-number {
+            transform: rotate(180deg);
+            color: var(--teal); /* SVG color on hover */
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            color: var(--white);
+        }
+
+        .step p {
+            color: var(--grey);
+            line-height: 1.5;
+        }
+
+        .step-overlay h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--teal);
+            margin-bottom: 0.75rem;
+        }
+        .step-overlay p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--white);
+            margin: 0;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 5%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--teal);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--dark-overlay);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(0, 192, 160, 0.25);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 192, 160, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            line-height: 1;
+            position: relative; /* For pseudo-element positioning */
+            transition: color 0.3s ease;
+        }
+
+        /* The emoji itself */
+        .feature-icon span {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        /* The cyborg image overlay */
+        .feature-icon::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transform: scale(1); /* Initial scale */
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Add transform to transition */
+        }
+
+        /* On hover, hide emoji and show cyborg image */
+        .feature-card:hover .feature-icon span {
+            opacity: 0;
+        }
+        .feature-card:hover .feature-icon::after {
+            opacity: 1;
+        }
+
+        /* --- Cyborg Icon Hover Scaling --- */
+        .feature-card:hover .icon-calendar::after,
+        .feature-card:hover .icon-earth::after {
+           transform: scale(1.3); /* 30% larger */
+        }
+        .feature-card:hover .icon-lense::after {
+           transform: scale(1.2); /* 20% larger */
+        }
+
+        /* Set the specific cyborg image for each icon */
+        .icon-calendar::after { background-image: url('https://i.ibb.co/MyBTqt3C/cyborg-calendar.png'); }
+        .icon-earth::after { background-image: url('https://i.ibb.co/FLgxfXmB/cyborg-earth.png'); }
+        .icon-lense::after { background-image: url('https://i.ibb.co/xSd0wJ7g/cyborg-lense.png'); }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--teal);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--grey);
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 80px 5%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .pricing h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--teal);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pricing-card {
+            background: var(--dark-overlay);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(0, 192, 160, 0.25);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--teal);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 192, 160, 0.2);
+        }
+
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--teal);
+            color: var(--black);
+            padding: 5px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 192, 160, 0.15);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-period {
+            color: var(--grey);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-original {
+            color: var(--grey);
+            font-size: 0.9rem;
+            text-decoration: line-through;
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list li {
+            color: var(--grey);
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--teal);
+            font-weight: bold;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 80px 5%;
+            background: linear-gradient(135deg, var(--black) 0%, #0f1615 100%);
+        }
+
+        .faq .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--white);
+        }
+
+        .faq-item {
+            background: var(--dark-overlay);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(0, 192, 160, 0.2);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--teal);
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--teal);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 2rem 1.5rem;
+            color: var(--grey);
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 80px 5%;
+            background: linear-gradient(135deg, #00806c, #006657);
+            text-align: center;
+            color: var(--white);
+        }
+
+        .final-cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            color: var(--grey);
+        }
+
+        .final-cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-dark {
+            background: var(--black);
+            color: var(--white);
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dark:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--black);
+            padding: 60px 5% 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer .container {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 300px 250px;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .footer-logo .brand-icon {
+            color: var(--teal);
+        }
+
+        .footer-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .footer-brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .footer-brand-subtitle {
+            font-size: 1rem;
+            color: var(--grey);
+            line-height: 1;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-nav a {
+            color: var(--grey);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav a:hover {
+            color: var(--teal);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .contact-info p {
+            color: var(--grey);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .contact-phone, .contact-email {
+            color: var(--grey);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-phone:hover, .contact-email:hover {
+            color: var(--teal);
+        }
+
+        .footer-section h3 {
+            color: var(--white);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-form label {
+            color: var(--grey);
+            font-size: 0.9rem;
+        }
+
+        .contact-form input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 10px 12px;
+            color: var(--white);
+            font-size: 0.9rem;
+        }
+
+        .contact-form input:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .email-btn {
+            background: var(--teal);
+            color: var(--black);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .email-btn:hover {
+            background: #00a085;
+            transform: translateY(-1px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--grey);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--teal);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--grey);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                padding-top: 100px;
+                padding-bottom: 80px;
+                gap: 1.5rem;
+            }
+            .hero-content {
+                order: initial;
+                max-width: 100%;
+                align-items: center;
+                display: flex;
+                flex-direction: column;
+            }
+            .hero-image {
+                order: initial;
+                max-width: 100%;
+            }
+            .pain-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 4%;
+                height: 70px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .phone-cta {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 0.5rem;
+            }
+
+            .phone-number {
+                font-size: 0.9rem;
+            }
+
+            .btn-ghost {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .hero {
+                padding: 0 4%;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .pain-solution,
+            .features,
+            .how-it-works,
+            .pricing,
+            .faq {
+                padding: 60px 4%;
+            }
+
+            .pain-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .final-cta {
+                padding: 60px 4%;
+            }
+
+            .final-cta h2 {
+                font-size: 2rem;
+            }
+
+            .final-cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer {
+                padding: 40px 4% 30px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .footer-brand {
+                gap: 1.5rem;
+            }
+
+            .footer-nav {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        /* Mobile Bottom Bar */
+        @media (max-width: 768px) {
+            .mobile-bottom-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--teal);
+                padding: 15px;
+                display: flex;
+                justify-content: center;
+                z-index: 1000;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .mobile-call-btn {
+                background: var(--black);
+                color: var(--white);
+                padding: 12px 24px;
+                border-radius: 25px;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            body {
+                padding-bottom: 70px;
+            }
+        }
+
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Utility Classes */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--white);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .brand-icon img,
+        .footer-logo .brand-icon img {
+            filter: brightness(1.3);
+        }
+
+        .how-it-works-card .hologram-content h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #00A99D;
+        }
+
+        .how-it-works-card .hologram-content p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+        }
+
+        .how-it-works-card .number {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .how-it-works-card .number img {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* Fix pricing overflow on very small screens */
+        .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+    </style>
+</head>
+<body style="background-color: var(--black);">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Handle customer calls and book appointments. Intelligently.</h1>
+            <p>Our AI-powered voice receptionist answers every call, books appointments directly into your calendar, answers common questions, and even upsells seasonal tires. Free up your staff to focus on the customers in front of them.</p>
+            <div class="hero-cta">
+                <a href="https://www.neweraintelligence.com/get-started" class="btn-ghost" target="_blank" rel="noopener noreferrer">Let's Connect</a>
+                <a href="tel:+15878404064" class="btn-ghost">Test Now</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="cyborg-tire-shop.png" alt="AI-powered tire and mechanical shop receptionist interface">
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="animate-on-scroll">How It Works - Simple as 1, 2, 3</h2>
+            <div class="steps">
+                <div class="step animate-on-scroll" style="min-height: 160px;">
+                    <div class="step-index">1</div>
+                    <div class="step-number">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.58,6.24A7.72,7.72,0,0,0,12,4,8,8,0,0,0,6.5,18.5a7.92,7.92,0,0,0,9.91,1.4,7.8,7.8,0,0,0,3.53-6,7.81,7.81,0,0,0-3.36-7.64ZM12,20a6,6,0,0,1-3.46-10.54l.59-.59.85.85.59.59.85.85.59.59.85.85.58.59.85.85.59.59L15,14.41l.59.59.85.85.59.59L18,17.54A6,6,0,0,1,12,20ZM12,6a6,6,0,0,1,5.54,3.47L17,8.9l-.85-.85-.59-.59-.85-.85-.59-.59-.85-.85-.59-.58L12.7,4.6,12.11,4l-.59.59-.85.85-.59.59L9,7.17l-.59.59-.85.85-.59.59L6,10.29A6,6,0,0,1,12,6Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,12,14Z"/></svg>
+                    </div>
+                    <h3>Customer Calls</h3>
+                    <div class="step-overlay">
+                        <h4>Instant Connection</h4>
+                        <p style="max-width:260px">Our AI answers every call immediately, handling inquiries and emergencies so no customer ever waits.</p>
+                    </div>
+                </div>
+                <div class="step animate-on-scroll" style="min-height: 160px;">
+                    <div class="step-index">2</div>
+                    <div class="step-number">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.58,6.24A7.72,7.72,0,0,0,12,4,8,8,0,0,0,6.5,18.5a7.92,7.92,0,0,0,9.91,1.4,7.8,7.8,0,0,0,3.53-6,7.81,7.81,0,0,0-3.36-7.64ZM12,20a6,6,0,0,1-3.46-10.54l.59-.59.85.85.59.59.85.85.59.59.85.85.58.59.85.85.59.59L15,14.41l.59.59.85.85.59.59L18,17.54A6,6,0,0,1,12,20ZM12,6a6,6,0,0,1,5.54,3.47L17,8.9l-.85-.85-.59-.59-.85-.85-.59-.59-.85-.85-.59-.58L12.7,4.6,12.11,4l-.59.59-.85.85-.59.59L9,7.17l-.59.59-.85.85-.59.59L6,10.29A6,6,0,0,1,12,6Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,12,14Z"/></svg>
+                    </div>
+                    <h3>AI Understands & Books</h3>
+                    <div class="step-overlay">
+                        <h4>Smart Scheduling</h4>
+                        <p style="max-width:260px">The AI understands customer needs, checks your real-time availability, and books appointments directly.</p>
+                    </div>
+                </div>
+                <div class="step animate-on-scroll" style="min-height: 160px;">
+                    <div class="step-index">3</div>
+                    <div class="step-number">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.58,6.24A7.72,7.72,0,0,0,12,4,8,8,0,0,0,6.5,18.5a7.92,7.92,0,0,0,9.91,1.4,7.8,7.8,0,0,0,3.53-6,7.81,7.81,0,0,0-3.36-7.64ZM12,20a6,6,0,0,1-3.46-10.54l.59-.59.85.85.59.59.85.85.59.59.85.85.58.59.85.85.59.59L15,14.41l.59.59.85.85.59.59L18,17.54A6,6,0,0,1,12,20ZM12,6a6,6,0,0,1,5.54,3.47L17,8.9l-.85-.85-.59-.59-.85-.85-.59-.59-.85-.85-.59-.58L12.7,4.6,12.11,4l-.59.59-.85.85-.59.59L9,7.17l-.59.59-.85.85-.59.59L6,10.29A6,6,0,0,1,12,6Zm0,8a2,2,0,1,0-2-2A2,2,0,0,0,12,14Z"/></svg>
+                    </div>
+                    <h3>You Get Confirmed Appointments</h3>
+                    <div class="step-overlay">
+                        <h4>Seamless Integration</h4>
+                        <p style="max-width:260px">Receive instant notifications for confirmed bookings, with all data synced to your calendar and CRM.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="animate-on-scroll">Powerful Features Built for Tire Shops</h2>
+        <div class="feature-grid">
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon icon-calendar"><span>📅</span></div>
+                <h3>Real-Time Booking Integration</h3>
+                <p>Seamlessly connects with your existing scheduling system. Customers can book tire installations, oil changes, and inspections instantly.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon icon-earth"><span>🌍</span></div>
+                <h3>Multilingual & Auto-Smart</h3>
+                <p>Speaks your customers' language with automotive expertise. Understands tire sizes, brands, seasonal needs, and service terminology.</p>
+            </div>
+            <div class="feature-card animate-on-scroll">
+                <div class="feature-icon icon-lense"><span>🔍</span></div>
+                <h3>Inventory & Price Lookup</h3>
+                <p>Instantly checks tire availability and pricing. Provides accurate quotes and suggests alternatives when specific tires aren't in stock.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <h2 class="animate-on-scroll">Simple, Transparent Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card animate-on-scroll">
+                <h3>Virtual Voice Agent I (Simple)</h3>
+                <div class="price">$455</div>
+                <div class="price-period">per month</div>
+                <div class="price-original">Regular: $900.00</div>
+                <ul class="feature-list">
+                    <li>Call-routing</li>
+                    <li>Live-transfer</li>
+                    <li>FAQ responses</li>
+                    <li>Basic customer service</li>
+                    <li>Standard business hours</li>
+                </ul>
+                <a href="https://www.neweraintelligence.com/get-started" class="btn-ghost" target="_blank" rel="noopener noreferrer">Let's Connect</a>
+            </div>
+            <div class="pricing-card featured animate-on-scroll">
+                <h3>Virtual Voice Agent II (Enhanced)</h3>
+                <div class="price">$795</div>
+                <div class="price-period">per month</div>
+                <div class="price-original">Regular: $2,100.00</div>
+                <ul class="feature-list">
+                    <li>Simple Toolset +</li>
+                    <li>Appointment booking</li>
+                    <li>Note-taking</li>
+                    <li>Analytics dashboard</li>
+                    <li>24/7 coverage</li>
+                    <li>Advanced integrations</li>
+                </ul>
+                <a href="https://www.neweraintelligence.com/get-started" class="btn-ghost" target="_blank" rel="noopener noreferrer">Let's Connect</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="animate-on-scroll">Frequently Asked Questions</h2>
+            <div class="faq-item animate-on-scroll">
+                <button class="faq-question">
+                    Can the AI handle French or Spanish-speaking customers?
+                </button>
+                <div class="faq-answer">
+                    Yes! Our AI is multilingual and can seamlessly switch between English, French, and Spanish during conversations. It understands automotive terminology in all supported languages.
+                </div>
+            </div>
+            <div class="faq-item animate-on-scroll">
+                <button class="faq-question">
+                    How quickly can we get set up?
+                </button>
+                <div class="faq-answer">
+                    Most tire shops are up and running within 48 hours. We handle the technical setup, integrate with your existing systems, and provide training for your staff.
+                </div>
+            </div>
+            <div class="faq-item animate-on-scroll">
+                <button class="faq-question">
+                    What if the AI can't answer a customer's question?
+                </button>
+                <div class="faq-answer">
+                    The AI can handle 95% of common tire shop inquiries. For complex situations, it seamlessly transfers the call to your staff while providing them with a complete conversation summary.
+                </div>
+            </div>
+            <div class="faq-item animate-on-scroll">
+                <button class="faq-question">
+                    Does it integrate with our existing POS system?
+                </button>
+                <div class="faq-answer">
+                    Yes! We integrate with major tire shop POS systems including TirePower, ASA, Mitchell 1, and others. The AI can check inventory, pricing, and update your scheduling system in real-time.
+                </div>
+            </div>
+            <div class="faq-item animate-on-scroll">
+                <button class="faq-question">
+                    What's included in the free trial?
+                </button>
+                <div class="faq-answer">
+                    Your 14-day free trial includes full access to all features, unlimited calls, complete setup, and dedicated support. No credit card required to start.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta" id="demo">
+        <div class="container">
+            <h2>Ready to Never Miss Another Customer Call?</h2>
+            <p>Join 500+ tire shops already using AI to boost revenue and improve customer service</p>
+            <div class="final-cta-buttons">
+                <a href="tel:+15878404064" class="btn-dark">Test Now</a>
+                <a href="https://www.neweraintelligence.com/get-started" class="btn-dark" target="_blank" rel="noopener noreferrer">Let's Connect</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Animate on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements with animate-on-scroll class
+        document.addEventListener('DOMContentLoaded', () => {
+            const animateElements = document.querySelectorAll('.animate-on-scroll');
+            animateElements.forEach(el => observer.observe(el));
+        });
+
+        // FAQ Accordion
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isActive = question.classList.contains('active');
+                    
+                    // Close all other FAQs
+                    faqQuestions.forEach(q => {
+                        q.classList.remove('active');
+                        q.nextElementSibling.classList.remove('active');
+                        q.nextElementSibling.style.display = 'none';
+                    });
+                    
+                    // Toggle current FAQ
+                    if (!isActive) {
+                        question.classList.add('active');
+                        answer.classList.add('active');
+                        answer.style.display = 'block';
+                    }
+                });
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.addEventListener('DOMContentLoaded', () => {
+            const links = document.querySelectorAll('a[href^="#"]');
+            
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Track demo button clicks (you can replace with your analytics)
+        document.addEventListener('DOMContentLoaded', () => {
+            const demoButtons = document.querySelectorAll('a[href="#demo"], a[href*="demo"]');
+            
+            demoButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Replace with your conversion tracking code
+                    console.log('Demo button clicked');
+                    // Example: gtag('event', 'demo_request', { event_category: 'engagement' });
+                });
+            });
+        });
+
+        // Phone number click tracking
+        document.addEventListener('DOMContentLoaded', () => {
+            const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+            
+            phoneLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    // Replace with your conversion tracking code
+                    console.log('Phone number clicked');
+                    // Example: gtag('event', 'phone_call', { event_category: 'contact' });
+                });
+            });
+        });
+
+        // Card click toggle for How-It-Works section
+        document.addEventListener('DOMContentLoaded', () => {
+            const steps = document.querySelectorAll('.how-it-works .step');
+            steps.forEach(step => {
+                step.addEventListener('click', () => {
+                    step.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/iframe-resizer@4.3.8/js/iframeResizer.contentWindow.min.js"></script>
+</body>
+</html> 
