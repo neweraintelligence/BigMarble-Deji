@@ -39,7 +39,8 @@ const navigationItems = [
     href: '/tools', 
     icon: Bot,
     subItems: [
-      { name: 'Greenhouse AI Tools', anchor: 'greenhouse-tools' }
+      { name: 'Greenhouse AI Tools', anchor: 'greenhouse-tools' },
+      { name: 'Workflow AI Tools', anchor: 'ai-tools-collection' }
     ]
   },
   { 
