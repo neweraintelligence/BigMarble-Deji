@@ -39,8 +39,7 @@ const navigationItems = [
     href: '/tools', 
     icon: Bot,
     subItems: [
-      { name: 'Greenhouse AI Tools', anchor: 'greenhouse-tools' },
-      { name: 'Recommended Solutions', anchor: 'solutions' }
+      { name: 'Greenhouse AI Tools', anchor: 'greenhouse-tools' }
     ]
   },
   { 
