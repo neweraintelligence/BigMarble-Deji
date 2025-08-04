@@ -437,8 +437,6 @@ export default function ModulesPage() {
             </div>
             <div>
               <h4 className="font-medium text-marble-900 mb-2">Session Details</h4>
-              <p className="text-sm text-marble-600">Training Cost: $1,975 + travel</p>
-              <p className="text-sm text-marble-600">Pre-workshop Survey: Required 4 weeks prior</p>
               <p className="text-sm text-marble-600">Materials: Permanent portal access included</p>
             </div>
           </div>
