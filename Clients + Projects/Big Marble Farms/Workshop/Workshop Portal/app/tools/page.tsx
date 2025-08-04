@@ -45,23 +45,23 @@ export default function ToolsPage() {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-greenhouse-600 to-marble-600 rounded-xl p-8 text-white">
-          <h1 className="text-3xl font-bold mb-2">AI Tools Evaluation</h1>
+        <div id="greenhouse-tools" className="bg-gradient-to-r from-greenhouse-600 to-marble-600 rounded-xl p-8 text-white">
+          <h1 className="text-3xl font-bold mb-2">AI Tools Explorer</h1>
           <p className="text-lg opacity-90">
-            Discover, evaluate, and select the best AI tools for greenhouse operations 🌱
+            Explore and discover AI tools for greenhouse operations 🌱
           </p>
         </div>
 
         {/* Enterprise AI Solutions */}
-        <div id="advanced-solutions">
+        <div id="solutions">
           <EnterpriseSolutions />
         </div>
 
-        {/* Your Curated Tools */}
-        <div id="curated-tools" className="bg-white rounded-xl border border-marble-200 overflow-hidden">
+        {/* AI Tools Collection */}
+        <div className="bg-white rounded-xl border border-marble-200 overflow-hidden">
           <div className="bg-gradient-to-r from-marble-600 to-greenhouse-600 p-6 text-white">
-            <h2 className="text-2xl font-bold mb-2">Your Curated Tools</h2>
-            <p className="opacity-90">Personalized AI tools for greenhouse management and pilot projects</p>
+            <h2 className="text-2xl font-bold mb-2">AI Tools Collection</h2>
+            <p className="opacity-90">Browse and explore various AI tools for your operations</p>
           </div>
           <div className="p-6">
             <CuratedToolsList pilotGeneratedTools={pilotGeneratedTools} />

@@ -286,9 +286,8 @@ export function CuratedToolsList({ pilotGeneratedTools = [] }: CuratedToolsListP
 
   const sources = [
     { id: 'all', name: 'All Sources', count: tools.length },
-    { id: 'role_recommended', name: 'Role Recommended', count: tools.filter(t => t.source === 'role_recommended').length },
-          { id: 'pilot_generated', name: 'From Workflow Planner', count: tools.filter(t => t.source === 'pilot_generated').length },
-    { id: 'curated', name: 'Curated', count: tools.filter(t => t.source === 'curated').length }
+    { id: 'role_recommended', name: 'Recommended', count: tools.filter(t => t.source === 'role_recommended').length },
+    { id: 'curated', name: 'Featured', count: tools.filter(t => t.source === 'curated').length }
   ]
 
   const filteredTools = tools.filter(tool => {
@@ -327,19 +326,10 @@ export function CuratedToolsList({ pilotGeneratedTools = [] }: CuratedToolsListP
 
   const getSourceBadge = (source: string, pilotContext?: string) => {
     switch (source) {
-      case 'pilot_generated':
-        return (
-          <div className="flex items-center space-x-1">
-            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">From Pilot</span>
-            {pilotContext && (
-              <span className="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">{pilotContext}</span>
-            )}
-          </div>
-        )
       case 'role_recommended':
         return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Recommended</span>
       case 'curated':
-        return <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Curated</span>
+        return <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">Featured</span>
       default:
         return null
     }
@@ -373,7 +363,7 @@ export function CuratedToolsList({ pilotGeneratedTools = [] }: CuratedToolsListP
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-marble-600">Personalized AI tools for Demo User in Greenhouse operations</p>
+          <p className="text-marble-600">AI tools for greenhouse operations and business automation</p>
         </div>
         <div className="text-sm text-marble-500">
           {filteredTools.length} tools available • Page {currentPage} of {totalPages}
@@ -533,7 +523,7 @@ export function CuratedToolsList({ pilotGeneratedTools = [] }: CuratedToolsListP
         <div className="text-center py-12">
           <Bot className="h-12 w-12 text-marble-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-marble-900 mb-2">No tools found</h3>
-          <p className="text-marble-600">Try adjusting your filters or create a pilot to get personalized tool recommendations.</p>
+          <p className="text-marble-600">Try adjusting your filters to find tools that match your needs.</p>
         </div>
       )}
     </div>

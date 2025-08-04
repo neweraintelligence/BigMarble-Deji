@@ -22,7 +22,7 @@ const navigationItems = [
     icon: Home,
     subItems: [
       { name: 'Training Overview', anchor: 'training-overview' },
-      { name: 'Session Progress', anchor: 'session-progress' }
+      { name: 'Session Overview', anchor: 'session-progress' }
     ]
   },
   { 
@@ -140,36 +140,26 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </button>
             </div>
           </div>
-          {/* User Profile Section */}
-          {profile && (
-            <div className={cn(
-              "p-6 border-b border-marble-200 flex flex-col items-center",
-              sidebarCollapsed && "px-2"
-            )}>
-              {sidebarCollapsed ? (
-                <div className="flex flex-col items-center space-y-3">
-                  <div className="w-10 h-10 bg-greenhouse-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    {profile.full_name?.charAt(0)}
-                  </div>
-                  <Image src="/bmf-logo.png" alt="Big Marble Farms Logo" width={32} height={32} className="w-8 h-8 object-contain" />
+          {/* Company Logo Section */}
+          <div className={cn(
+            "p-6 border-b border-marble-200 flex flex-col items-center",
+            sidebarCollapsed && "px-2"
+          )}>
+            {sidebarCollapsed ? (
+              <div className="flex flex-col items-center space-y-3">
+                <Image src="/bmf-logo.png" alt="Big Marble Farms Logo" width={32} height={32} className="w-8 h-8 object-contain" />
+              </div>
+            ) : (
+              <>
+                <div className="text-center mb-3">
+                  <p className="font-medium text-marble-900">General Access</p>
+                  <p className="text-sm text-marble-600">Training Participants</p>
                 </div>
-              ) : (
-                <>
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className="w-10 h-10 bg-greenhouse-500 rounded-full flex items-center justify-center text-white font-semibold">
-                      {profile.full_name?.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-medium text-marble-900">{profile.full_name}</p>
-                      <p className="text-sm text-marble-600 capitalize">{profile.role.replace('_', ' ')}</p>
-                    </div>
-                  </div>
-                  {/* BMF Logo */}
-                  <Image src="/bmf-logo.png" alt="Big Marble Farms Logo" width={80} height={80} className="mt-2 w-20 h-20 object-contain" />
-                </>
-              )}
-            </div>
-          )}
+                {/* BMF Logo */}
+                <Image src="/bmf-logo.png" alt="Big Marble Farms Logo" width={80} height={80} className="mt-2 w-20 h-20 object-contain" />
+              </>
+            )}
+          </div>
           {/* Navigation */}
           <nav className={cn(
             "flex-1 overflow-y-auto p-4 space-y-1",
