@@ -371,7 +371,11 @@ export default function ModulesPage() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-marble-900">Session Agenda</h3>
             {trainingModule.sections.map((section, index) => (
-              <div key={section.id} className="border border-marble-200 rounded-lg p-4 hover:bg-marble-50 transition-colors">
+              <Link 
+                key={section.id} 
+                href={`/modules/${trainingModule.id}/continue`}
+                className="block border border-marble-200 rounded-lg p-4 hover:bg-marble-50 transition-colors cursor-pointer"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
@@ -403,7 +407,7 @@ export default function ModulesPage() {
                     }`} />
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
