@@ -159,7 +159,7 @@ export default function ContinueModulePage({ params }: PageProps) {
     }
   }
 
-  const progressPercentage = ((currentSlide + 1) / courseContent.length) * 100
+
 
   return (
     <>
@@ -189,16 +189,6 @@ export default function ContinueModulePage({ params }: PageProps) {
                   <Target className="w-4 h-4 text-greenhouse-600" />
                   <span className="text-sm text-marble-700">{completedQuizzes}/{totalQuizzes} Quizzes</span>
                 </div>
-              </div>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="mt-4">
-              <div className="w-full bg-marble-200 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-greenhouse-500 to-marble-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${progressPercentage}%` }}
-                ></div>
               </div>
             </div>
           </div>
