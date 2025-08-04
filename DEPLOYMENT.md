@@ -11,32 +11,27 @@ This guide will help you deploy the simplified AI training portal to Render.
 
 ## Deployment Steps
 
-### Option 1: Using Blueprint (Recommended) ⭐
+### 1. Connect GitHub to Render
 
 1. Go to [Render Dashboard](https://dashboard.render.com)
-2. Click "New +" → "Blueprint" 
+2. Click "New +" → "Web Service"
 3. Connect your GitHub account if not already connected
 4. Select your repository: `BigMarblePortalSimplified`
-5. Render will automatically detect the `render.yaml` file
-6. Click "Apply" - Everything is pre-configured!
 
-### Option 2: Manual Web Service Setup
+### 2. Configure Web Service
 
-If you prefer manual setup or Blueprint doesn't work:
-
-1. Go to [Render Dashboard](https://dashboard.render.com) 
-2. Click "New +" → "Web Service"
-3. Select your repository: `BigMarblePortalSimplified`
-4. **IMPORTANT**: Change Language from "Docker" to "Node"
-
-**Configuration:**
+**Basic Settings:**
 - **Name**: `bigmarble-ai-training-portal`
-- **Region**: Oregon (recommended)  
+- **Region**: Oregon (recommended)
 - **Branch**: `main`
 - **Root Directory**: `Clients + Projects/Big Marble Farms/Workshop/Workshop Portal`
+- **Runtime**: Node
 - **Build Command**: `npm ci && npm run build`
 - **Start Command**: `npm start`
-- **Auto-Deploy**: Yes
+
+**Advanced Settings:**
+- **Auto-Deploy**: Yes (recommended)
+- **Health Check Path**: `/` (default)
 
 ### 3. Environment Variables
 

@@ -3,21 +3,25 @@ services:
     name: bigmarble-ai-training-portal
     runtime: node
     region: oregon
-    plan: free
-    rootDir: Clients + Projects/Big Marble Farms/Workshop/Workshop Portal
+    plan: starter
     buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /
-    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
       - key: NEXT_TELEMETRY_DISABLED
         value: 1
-    # Uncomment and add your environment variables as needed:
+    # Add your environment variables here as needed:
     # - key: NEXT_PUBLIC_SUPABASE_URL
-    #   value: your_supabase_project_url
+    #   fromService:
+    #     type: pserv
+    #     name: your-supabase-url
     # - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-    #   value: your_supabase_anon_key  
+    #   fromService:
+    #     type: pserv
+    #     name: your-supabase-anon-key
     # - key: OPENAI_API_KEY
-    #   value: your_openai_api_key
+    #   fromService:
+    #     type: pserv
+    #     name: your-openai-api-key

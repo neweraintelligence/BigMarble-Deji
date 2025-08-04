@@ -1,0 +1,16 @@
+{
+  "name": "AI for Greenhouse Operations - Big Marble Farms",
+  "short_name": "BMF AI Training",
+  "description": "Introductory training module on AI applications for enterprise greenhouse vegetable production",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#22c55e",
+  "icons": [
+    {
+      "src": "/greenhouse-emoji.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
