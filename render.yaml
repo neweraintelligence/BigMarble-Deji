@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: bigmarble-ai-training-portal
+    runtime: node
+    region: oregon
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: 1
+    # Add your environment variables here as needed:
+    # - key: NEXT_PUBLIC_SUPABASE_URL
+    #   fromService:
+    #     type: pserv
+    #     name: your-supabase-url
+    # - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+    #   fromService:
+    #     type: pserv
+    #     name: your-supabase-anon-key
+    # - key: OPENAI_API_KEY
+    #   fromService:
+    #     type: pserv
+    #     name: your-openai-api-key
