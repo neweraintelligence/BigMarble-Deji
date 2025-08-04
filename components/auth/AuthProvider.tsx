@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const mockProfile = {
     id: 'demo-user-123',
     email: 'Demo@bigmarble.ca',
-    full_name: 'Demo User',
+    full_name: 'Big Marble Farms User',
     role: 'marketing_manager',
     company_position: 'Marketing Manager',
     onboarding_completed: true,

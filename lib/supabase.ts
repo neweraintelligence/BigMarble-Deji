@@ -28,7 +28,7 @@ export async function getProfile(userId: string) {
   return {
     id: userId,
     email: 'demo@bigmarblefarms.com',
-    full_name: 'Demo User',
+    full_name: 'Big Marble Farms User',
     role: 'president',
     company_position: 'CEO',
     onboarding_completed: true,
@@ -41,7 +41,7 @@ export async function updateProfile(userId: string, updates: Partial<Database['p
   return {
     id: userId,
     email: 'demo@bigmarblefarms.com',
-    full_name: updates.full_name || 'Demo User',
+    full_name: updates.full_name || 'Big Marble Farms User',
     role: updates.role || 'president',
     company_position: 'CEO',
     onboarding_completed: true,
