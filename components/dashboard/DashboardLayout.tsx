@@ -29,10 +29,7 @@ const navigationItems = [
     name: 'Course Materials', 
     href: '/modules', 
     icon: BookOpen,
-    subItems: [
-      { name: 'Slides & Resources', anchor: 'slides' },
-      { name: 'AI Concepts', anchor: 'concepts' }
-    ]
+    subItems: []
   },
   { 
     name: 'AI Tools Explorer', 
