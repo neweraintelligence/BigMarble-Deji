@@ -128,151 +128,54 @@ export default function DashboardPage() {
             Welcome back, {profile.full_name}!
           </h1>
           <p className="text-lg opacity-90">
-            Continue your AI leadership journey with personalized learning modules for greenhouse innovation
+            Access your training materials and resources for the AI Greenhouse Operations session
           </p>
-        </div>
-
-        {/* Dashboard Stats */}
-        <div id="stats">
-          <DashboardStats stats={stats} />
         </div>
 
         {/* Workshop Overview */}
-        <div id="workshop">
+        <div id="training-overview">
           <WorkshopOverview />
-          <p className="mt-2 text-blue-800 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-sm font-medium">
-            This portal access is included complimentary with your AI Leadership Accelerator Workshop attendance.
-          </p>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Modules Section */}
-          <div id="learning-path" className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-marble-900">Your Learning Path</h2>
-                <span className="text-sm text-marble-600">
-                  {stats.modules_completed} of {stats.total_modules} completed
-                </span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <label htmlFor="modules-per-page" className="text-sm text-marble-600">
-                  Show:
-                </label>
-                <select
-                  id="modules-per-page"
-                  value={modulesPerPage}
-                  onChange={(e) => {
-                    setModulesPerPage(Number(e.target.value))
-                    setCurrentPage(0) // Reset to first page when changing page size
-                  }}
-                  className="border border-marble-300 rounded-lg px-3 py-1 text-sm bg-white"
-                >
-                  <option value={6}>6 per page</option>
-                  <option value={16}>16 per page</option>
-                  <option value={30}>30 per page</option>
-                </select>
-              </div>
+        {/* Session Information */}
+        <div id="session-progress" className="bg-white rounded-xl p-6 border border-marble-200">
+          <h2 className="text-2xl font-bold text-marble-900 mb-4">Training Session Details</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold text-marble-900 mb-3">Session Information</h3>
+              <ul className="space-y-2 text-marble-700">
+                <li><strong>Module:</strong> AI for Enterprise Greenhouse Operations</li>
+                <li><strong>Duration:</strong> 3 hours (180 minutes total)</li>
+                <li><strong>Format:</strong> On-site Interactive Session</li>
+                <li><strong>Participants:</strong> Up to 5 per micro-cohort + 1</li>
+                <li><strong>Location:</strong> Big Marble Farms (TBD)</li>
+              </ul>
             </div>
-            <ModuleGrid 
-              modules={currentModules} 
-              progress={progress} 
-            />
-            
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6">
-                <button
-                  onClick={goToPrevPage}
-                  disabled={currentPage === 0}
-                  className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-marble-600 bg-white border border-marble-300 rounded-lg hover:bg-marble-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span>Previous</span>
-                </button>
-                
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-marble-600">
-                    Page {currentPage + 1} of {totalPages}
-                  </span>
-                  <span className="text-xs text-marble-500">
-                    ({learningPathModules.length} modules)
-                  </span>
-                </div>
-                
-                <button
-                  onClick={goToNextPage}
-                  disabled={currentPage === totalPages - 1}
-                  className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-marble-600 bg-white border border-marble-300 rounded-lg hover:bg-marble-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span>Next</span>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            )}
+            <div>
+              <h3 className="text-lg font-semibold text-marble-900 mb-3">Training Focus</h3>
+              <ul className="space-y-2 text-marble-700">
+                <li>• AI fundamentals and terminology</li>
+                <li>• Greenhouse production optimization</li>
+                <li>• Operational efficiency systems</li>
+                <li>• Data-driven decision making</li>
+                <li>• Implementation strategies</li>
+              </ul>
+            </div>
           </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <RecentActivity userId={user.id} />
-            
-            {/* Progress Overview */}
-            <div className="bg-white rounded-xl p-6 border border-marble-200">
-              <h3 className="text-lg font-semibold text-marble-900 mb-4">Progress Overview</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>Overall Progress</span>
-                    <span>{stats.progress_percentage}%</span>
-                  </div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
-                      style={{ width: `${stats.progress_percentage}%` }}
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div className="bg-greenhouse-50 rounded-lg p-3 border border-greenhouse-200 hover:border-greenhouse-300 hover:shadow-lg transition-all duration-200">
-                    <div className="text-2xl font-bold text-greenhouse-600">
-                      {Math.floor(stats.time_spent_minutes / 60)}h
-                    </div>
-                    <div className="text-sm text-marble-600">Time Spent</div>
-                  </div>
-                  <div className="bg-marble-50 rounded-lg p-3 border border-marble-200 hover:border-greenhouse-300 hover:shadow-lg transition-all duration-200">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-marble-600">Modules Completed</p>
-                        <p className="text-3xl font-bold text-marble-900">3</p>
-                        <p className="text-sm text-marble-500">of 8</p>
-                      </div>
-                      <div className="w-12 h-12 bg-greenhouse-100 rounded-full flex items-center justify-center">
-                        <Image src="/greenhouse-emoji.png" alt="" width={32} height={32} className="w-8 h-8" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Next Workshop Session */}
-            <div className="bg-gradient-to-br from-greenhouse-50 to-marble-50 rounded-xl p-6 border border-greenhouse-200">
-              <h3 className="text-lg font-semibold text-marble-900 mb-2">Next Session 🌱</h3>
-              <p className="text-marble-700 mb-3">AI Tools for Greenhouse Operations</p>
-              <p className="text-sm text-marble-600 mb-4">Tomorrow at 2:00 PM</p>
-              <Link 
-                href={`/modules/${learningPathModules.find(m => m.status === 'not_started')?.id || '3'}/start`}
-                className="w-full block text-center bg-greenhouse-600 text-white py-2 px-4 rounded-lg hover:bg-greenhouse-700 transition-colors"
-              >
-                Go to Module
-              </Link>
-            </div>
+          
+          <div className="mt-6 flex space-x-4">
+            <Link 
+              href="/modules"
+              className="bg-greenhouse-600 text-white px-6 py-3 rounded-lg hover:bg-greenhouse-700 transition-colors font-medium"
+            >
+              View Course Materials
+            </Link>
+            <Link 
+              href="/tools"
+              className="bg-marble-100 text-marble-700 px-6 py-3 rounded-lg hover:bg-marble-200 transition-colors font-medium"
+            >
+              Explore AI Tools
+            </Link>
           </div>
         </div>
 
@@ -280,17 +183,17 @@ export default function DashboardPage() {
         <div className="space-y-3 mt-12">
           <div className="bg-white rounded-xl border border-marble-200 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h4 className="font-semibold text-marble-900 mb-1">Current Access</h4>
-              <p className="text-sm text-marble-700">AI Leadership Accelerator Workshop - Complimentary Access</p>
+              <h4 className="font-semibold text-marble-900 mb-1">Training Session Access</h4>
+              <p className="text-sm text-marble-700">AI for Enterprise Greenhouse Operations - Permanent Access</p>
             </div>
             <div className="flex flex-col items-end mt-4 sm:mt-0">
               <span className="text-green-600 font-semibold">Active</span>
-              <span className="text-xs text-marble-500">Included with Workshop</span>
+              <span className="text-xs text-marble-500">Included with Training</span>
             </div>
           </div>
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <span className="mr-2" role="img" aria-label="graduation cap">🎓</span>
-            <span className="text-blue-800 text-sm">This portal access is included complimentary with your AI Leadership Accelerator Workshop attendance.</span>
+            <span className="text-blue-800 text-sm">Permanent access to portal with course content, slides, tools list, and supplemental guides.</span>
           </div>
         </div>
       </div>
