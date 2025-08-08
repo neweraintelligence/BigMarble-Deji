@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Clock, BookOpen, Target, Users, TrendingUp, Lightbulb, Zap, Calendar } from 'lucide-react'
 
 interface ModuleGridProps {
@@ -9,6 +10,7 @@ interface ModuleGridProps {
 }
 
 export function ModuleGrid({ modules, progress }: ModuleGridProps) {
+  const router = useRouter()
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
@@ -188,9 +190,21 @@ export function ModuleGrid({ modules, progress }: ModuleGridProps) {
         const enhancedData = getEnhancedModuleData(module)
         const categoryColor = getCategoryColor(enhancedData.category)
         const CategoryIcon = getCategoryIcon(enhancedData.category)
+        const href = module.status === 'in_progress'
+          ? `/modules/${module.id}/continue`
+          : module.status === 'completed'
+            ? `/modules/${module.id}/review`
+            : `/modules/${module.id}/start`
         
-                 return (
-           <div key={module.id} className="bg-white rounded-xl border-2 border-marble-300 p-6 hover:border-greenhouse-300 hover:shadow-lg transition-all duration-200">
+         return (
+           <div
+             key={module.id}
+             onClick={() => router.push(href)}
+             role="button"
+             tabIndex={0}
+             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); router.push(href) } }}
+             className="bg-white rounded-xl border-2 border-marble-300 p-6 hover:border-greenhouse-300 hover:shadow-lg transition-all duration-200 cursor-pointer"
+           >
              {/* Header Section */}
              <div className="flex items-start justify-between mb-4">
                <div className="flex items-start space-x-3 flex-1">
@@ -265,22 +279,8 @@ export function ModuleGrid({ modules, progress }: ModuleGridProps) {
                </div>
              )}
 
-             {/* Action Buttons */}
-             {module.status === 'not_started' && (
-               <Link href={`/modules/${module.id}/start`} className="w-full block bg-greenhouse-600 text-white text-center py-3 rounded-lg hover:bg-greenhouse-700 transition-colors font-medium">
-                 Start Module
-               </Link>
-             )}
-             {module.status === 'in_progress' && (
-               <Link href={`/modules/${module.id}/continue`} className="w-full block bg-blue-600 text-white text-center py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                 Continue Learning
-               </Link>
-             )}
-             {module.status === 'completed' && (
-               <Link href={`/modules/${module.id}/review`} className="w-full block bg-marble-600 text-white text-center py-3 rounded-lg hover:bg-marble-700 transition-colors font-medium">
-                 Review Module
-               </Link>
-             )}
+              {/* Hint */}
+              <div className="mt-4 text-sm text-marble-500">Click to open interactive session</div>
            </div>
          )
       })}

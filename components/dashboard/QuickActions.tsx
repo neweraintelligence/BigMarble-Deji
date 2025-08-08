@@ -11,9 +11,9 @@ export function QuickActions() {
           <div className="text-2xl mb-2">🛠️</div>
           <div className="text-sm font-medium text-marble-900">Curated Tools</div>
         </Link>
-        <Link href="/modules" className="p-4 bg-greenhouse-50 border border-greenhouse-200 rounded-lg hover:bg-greenhouse-100 transition-colors flex flex-col items-center justify-center">
-          <div className="text-2xl mb-2">📚</div>
-          <div className="text-sm font-medium text-marble-900">Modules</div>
+        <Link href="/modules/1/continue" className="p-4 bg-greenhouse-50 border border-greenhouse-200 rounded-lg hover:bg-greenhouse-100 transition-colors flex flex-col items-center justify-center">
+          <div className="text-2xl mb-2">🎓</div>
+          <div className="text-sm font-medium text-marble-900">Open Session</div>
         </Link>
         <Link href="/pilot" className="p-4 bg-greenhouse-50 border border-greenhouse-200 rounded-lg hover:bg-greenhouse-100 transition-colors flex flex-col items-center justify-center">
           <div className="text-2xl mb-2">🎯</div>

@@ -23,12 +23,7 @@ const navigationItems = [
       { name: 'Session Overview', anchor: 'session-progress' }
     ]
   },
-  { 
-    name: 'Modules', 
-    href: '/modules', 
-    icon: BookOpen,
-    subItems: []
-  },
+  // Modules removed per simplification request
   { 
     name: 'AI Tools Explorer', 
     href: '/tools', 
