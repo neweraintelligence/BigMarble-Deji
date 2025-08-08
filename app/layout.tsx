@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from '@/components/auth/AuthProvider'
-import { ChatProvider } from '@/components/chat/ChatProvider'
 import Image from "next/image";
 
 const inter = Inter({ subsets: ['latin'] })
@@ -34,26 +33,24 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={`${inter.className} h-full`}>
         <AuthProvider>
-          <ChatProvider>
-            <main style={{ minHeight: '100vh', background: '#f9fafb' }}>
-              <div className="min-h-full bg-gradient-to-br from-marble-50 to-greenhouse-50">
-                {children}
-              </div>
-            </main>
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 4000,
-                style: {
-                  background: '#fff',
-                  color: '#1e293b',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '0.5rem',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                },
-              }}
-            />
-          </ChatProvider>
+          <main style={{ minHeight: '100vh', background: '#f9fafb' }}>
+            <div className="min-h-full bg-gradient-to-br from-marble-50 to-greenhouse-50">
+              {children}
+            </div>
+          </main>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#fff',
+                color: '#1e293b',
+                border: '1px solid #e2e8f0',
+                borderRadius: '0.5rem',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          />
         </AuthProvider>
       </body>
     </html>

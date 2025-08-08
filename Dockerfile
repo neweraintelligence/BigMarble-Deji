@@ -1,22 +1,17 @@
-﻿# Use the official Node.js runtime as the base image
+# Use the official Node.js runtime as the base image
 FROM node:18-alpine
 
-# Set working directory inside the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# -----------------------------
-# Install dependencies first (for caching)
-# -----------------------------
-# Copy package.json and lock file from the portal subfolder (paths contain spaces, so use array syntax)
-COPY ["Clients + Projects/Big Marble Farms/Workshop/Workshop Portal/package.json", \
-      "Clients + Projects/Big Marble Farms/Workshop/Workshop Portal/package-lock.json", \
-      "./"]
+# Copy package.json and package-lock.json first for better caching
+COPY package*.json ./
+
+# Install all dependencies (including devDependencies for build)
 RUN npm ci
 
-# -----------------------------
-# Copy the rest of the application source
-# -----------------------------
-COPY ["Clients + Projects/Big Marble Farms/Workshop/Workshop Portal", "./"]
+# Copy the rest of the application files
+COPY . .
 
 # Build the Next.js application
 RUN npm run build
@@ -25,8 +20,8 @@ RUN npm run build
 RUN npm prune --production
 
 # Create a non-root user for security
-RUN addgroup --system --gid 1001 nodejs \
-    && adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 # Change ownership of the app directory to the nextjs user
 RUN chown -R nextjs:nodejs /app
@@ -36,4 +31,4 @@ USER nextjs
 EXPOSE 3000
 
 # Define the command to run the application
-CMD ["npm", "start"]
+CMD ["npm", "start"] 

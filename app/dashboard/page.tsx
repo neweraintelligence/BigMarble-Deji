@@ -122,16 +122,6 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        {/* Welcome Section */}
-        <div id="overview" className="bg-gradient-to-r from-greenhouse-600 to-marble-600 rounded-xl p-8 text-white">
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome back, {profile.full_name}!
-          </h1>
-          <p className="text-lg opacity-90">
-            Access your training materials and resources for the AI Greenhouse Operations session
-          </p>
-        </div>
-
         {/* Workshop Overview */}
         <div id="training-overview">
           <WorkshopOverview />
@@ -168,7 +158,7 @@ export default function DashboardPage() {
               href="/modules"
               className="bg-greenhouse-600 text-white px-6 py-3 rounded-lg hover:bg-greenhouse-700 transition-colors font-medium"
             >
-              View Course Materials
+              Go to Modules
             </Link>
             <Link 
               href="/tools"
@@ -177,6 +167,34 @@ export default function DashboardPage() {
               Explore AI Tools
             </Link>
           </div>
+        </div>
+
+        {/* Modules Grid (clickable) */}
+        <div>
+          <h2 className="text-2xl font-bold text-marble-900 mb-4">Your Modules</h2>
+          <ModuleGrid modules={currentModules} progress={progress} />
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4">
+              <button
+                onClick={goToPrevPage}
+                disabled={currentPage === 0}
+                className="px-4 py-2 rounded-lg border border-marble-300 text-marble-700 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <div className="text-sm text-marble-600">
+                Page {currentPage + 1} of {totalPages}
+              </div>
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage >= totalPages - 1}
+                className="px-4 py-2 rounded-lg border border-marble-300 text-marble-700 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Current Access Section at the bottom */}

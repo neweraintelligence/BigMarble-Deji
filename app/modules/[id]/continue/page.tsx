@@ -1,8 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, Play, Pause, CheckCircle, XCircle, BarChart3, BookOpen, Target, Clock } from 'lucide-react'
 import Image from 'next/image'
+import { JoinSessionModal } from '@/components/quiz/JoinSessionModal'
+import { Leaderboard } from '@/components/quiz/Leaderboard'
+import { QuizRunner } from '@/components/quiz/QuizRunner'
 
 interface PageProps {
   params: {
@@ -122,6 +125,9 @@ export default function ContinueModulePage({ params }: PageProps) {
   const [score, setScore] = useState(0)
   const [totalQuizzes, setTotalQuizzes] = useState(0)
   const [completedQuizzes, setCompletedQuizzes] = useState(0)
+  const [joinOpen, setJoinOpen] = useState(false)
+  const [sessionId, setSessionId] = useState<string>('')
+  const [participantName, setParticipantName] = useState<string>('')
 
   const currentContent = courseContent[currentSlide]
   const isQuiz = currentContent.type === 'quiz'
@@ -159,8 +165,23 @@ export default function ContinueModulePage({ params }: PageProps) {
     }
   }
 
+  useEffect(() => {
+    const savedName = localStorage.getItem('bmf_display_name') || ''
+    const savedSession = localStorage.getItem('bmf_session_id') || ''
+    if (savedName && savedSession) {
+      setParticipantName(savedName)
+      setSessionId(savedSession)
+      setJoinOpen(false)
+    } else {
+      setJoinOpen(true)
+    }
+  }, [])
 
-
+  const onJoined = (data: { participantId: string; displayName: string; sessionId: string }) => {
+    setParticipantName(data.displayName)
+    setSessionId(data.sessionId)
+    setJoinOpen(false)
+  }
   return (
     <>
       <Image 
@@ -189,6 +210,10 @@ export default function ContinueModulePage({ params }: PageProps) {
                   <Target className="w-4 h-4 text-greenhouse-600" />
                   <span className="text-sm text-marble-700">{completedQuizzes}/{totalQuizzes} Quizzes</span>
                 </div>
+                <div className="hidden sm:flex items-center space-x-2">
+                  <Clock className="w-4 h-4 text-marble-600" />
+                  <span className="text-xs text-marble-600">{participantName ? `${participantName} · ${sessionId.replace('session-','Session ')}` : 'Not joined'}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -212,65 +237,25 @@ export default function ContinueModulePage({ params }: PageProps) {
                 </div>
               </div>
 
-              {/* Quiz Section */}
-              {isQuiz && currentContent.options && (
+              {/* Quiz Section - replaced with competitive runner + leaderboard */}
+              {isQuiz && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-marble-900 mb-4">Select the best answer:</h3>
-                  <div className="space-y-3">
-                    {currentContent.options.map((option, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleAnswerSelect(index)}
-                        className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 ${
-                          selectedAnswer === index
-                            ? 'border-greenhouse-500 bg-greenhouse-50'
-                            : 'border-marble-200 hover:border-marble-300 hover:bg-marble-50'
-                        }`}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            selectedAnswer === index ? 'border-greenhouse-500 bg-greenhouse-500' : 'border-marble-300'
-                          }`}>
-                            {selectedAnswer === index && <div className="w-2 h-2 bg-white rounded-full"></div>}
-                          </div>
-                          <span className="text-marble-700">{option}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {selectedAnswer !== null && !showResult && (
+                  <h3 className="text-lg font-semibold text-marble-900 mb-4">Competitive Quiz</h3>
+                  {!participantName || !sessionId ? (
                     <button
-                      onClick={handleSubmitAnswer}
-                      className="mt-6 bg-greenhouse-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-greenhouse-700 transition-colors"
+                      onClick={() => setJoinOpen(true)}
+                      className="bg-greenhouse-600 text-white px-4 py-2 rounded-lg"
                     >
-                      Submit Answer
+                      Join Session to Start
                     </button>
-                  )}
-                  
-                  {showResult && (
-                    <div className={`mt-6 p-4 rounded-lg ${
-                      selectedAnswer === currentContent.correctAnswer
-                        ? 'bg-green-50 border border-green-200'
-                        : 'bg-red-50 border border-red-200'
-                    }`}>
-                      <div className="flex items-center space-x-2">
-                        {selectedAnswer === currentContent.correctAnswer ? (
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                        ) : (
-                          <XCircle className="w-5 h-5 text-red-600" />
-                        )}
-                        <span className={`font-semibold ${
-                          selectedAnswer === currentContent.correctAnswer ? 'text-green-700' : 'text-red-700'
-                        }`}>
-                          {selectedAnswer === currentContent.correctAnswer ? 'Correct!' : 'Incorrect'}
-                        </span>
+                  ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <div className="lg:col-span-2">
+                        <QuizRunner defaultQuizKey="session1_final" onFinished={() => {}} />
                       </div>
-                      {selectedAnswer !== currentContent.correctAnswer && (
-                        <p className="text-sm text-red-600 mt-2">
-                          The correct answer is: {currentContent.options?.[currentContent.correctAnswer!]}
-                        </p>
-                      )}
+                      <div>
+                        <Leaderboard sessionId={sessionId} quizKey="session1_final" />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -372,6 +357,7 @@ export default function ContinueModulePage({ params }: PageProps) {
           </div>
         </div>
       </div>
+      <JoinSessionModal isOpen={joinOpen} onJoined={onJoined} />
     </>
   )
 } 

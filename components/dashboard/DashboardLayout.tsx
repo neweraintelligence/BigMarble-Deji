@@ -1,11 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Menu, X, MessageCircle, LogOut, Settings, Home, BookOpen, Bot, Target, ChevronDown, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Menu, X, LogOut, Settings, Home, BookOpen, Bot, ChevronDown, ChevronRight, ChevronLeft } from 'lucide-react'
 import { NavIcon } from './NavIcon'
 import { useAuth } from '@/components/auth/AuthProvider'
-import { useChat } from '@/components/chat/ChatProvider'
-import { ChatBot } from '@/components/chat/ChatBot'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useRouter, usePathname } from 'next/navigation'
@@ -26,7 +24,7 @@ const navigationItems = [
     ]
   },
   { 
-    name: 'Course Materials', 
+    name: 'Modules', 
     href: '/modules', 
     icon: BookOpen,
     subItems: []
@@ -53,7 +51,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [expandedMenus, setExpandedMenus] = useState<string[]>([])
   const { profile, signOut } = useAuth()
-  const { isOpen: chatOpen, toggleChat } = useChat()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -245,10 +242,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </div>
       
-      {/* Main content with dynamic width */}
+      {/* Main content */}
       <div className={cn(
         "flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out",
-        chatOpen ? "sm:mr-96 mr-0" : "mr-0"
+        "mr-0"
       )}>
         {/* Top bar */}
         <header className="bg-white border-b border-marble-200 px-6 py-4">
@@ -263,63 +260,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="lg:hidden flex-1 text-center">
                 <span className="text-lg font-semibold text-marble-900">AI Greenhouse Training</span>
               </div>
-              <div className="flex items-center space-x-4 justify-end">
-                {/* Enhanced AI Copilot Button - Desktop */}
-                <Button
-                  onClick={toggleChat}
-                  variant={chatOpen ? "default" : "outline"}
-                  size="lg"
-                  style={{ backgroundColor: '#0176a8', borderColor: '#0176a8', color: '#fff' }}
-                  className={cn(
-                    "hidden sm:flex items-center space-x-4 group transition-all duration-200 py-7 text-lg font-semibold shadow-lg scale-110"
-                  )}
-                >
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                      <Image 
-                        src="/greenhouse-emoji.png" 
-                        alt="AI Copilot" 
-                        width={24} 
-                        height={24} 
-                        className="w-6 h-6 object-contain" 
-                      />
-                    </div>
-                    {!chatOpen && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />
-                    )}
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <span className="text-base font-bold">AI Copilot</span>
-                    <span className="text-sm opacity-75">Ask me anything!</span>
-                  </div>
-                </Button>
-                {/* Mobile AI Copilot Button */}
-                <Button
-                  onClick={toggleChat}
-                  variant={chatOpen ? "default" : "outline"}
-                  size="sm"
-                  style={{ backgroundColor: '#0176a8', borderColor: '#0176a8', color: '#fff' }}
-                  className={cn(
-                    "sm:hidden flex items-center space-x-3 group transition-all duration-200 py-7 font-semibold shadow-lg scale-110"
-                  )}
-                >
-                  <div className="relative">
-                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                      <Image 
-                        src="/greenhouse-emoji.png" 
-                        alt="AI Copilot" 
-                        width={20} 
-                        height={20} 
-                        className="w-5 h-5 object-contain" 
-                      />
-                    </div>
-                    {!chatOpen && (
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
-                    )}
-                  </div>
-                  <span className="text-base font-bold">AI</span>
-                </Button>
-              </div>
+              <div className="flex items-center space-x-4 justify-end" />
             </div>
           </div>
         </header>
@@ -328,9 +269,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           {children}
         </main>
       </div>
-      
-      {/* Chat Sidebar */}
-      <ChatBot />
     </div>
   )
 }

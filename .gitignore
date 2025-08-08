@@ -32,3 +32,8 @@ Tools Library - Tools.pdf
 
 # Explicitly include the Workshop Portal app so it is built on Render
 !Clients + Projects/Big Marble Farms/Workshop/Workshop Portal/** 
+node_modules
+.next/
+tsconfig.tsbuildinfo
+.env
+.env.local
