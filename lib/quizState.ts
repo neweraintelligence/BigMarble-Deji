@@ -1,5 +1,3 @@
-'use server'
-
 // Minimal in-memory state for sessions, participants, and quiz scoring
 // This is suitable for workshops and demos; replace with Supabase for persistence later.
 
