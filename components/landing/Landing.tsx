@@ -9,13 +9,11 @@ import { Button } from '@/components/ui/Button'
 
 export function Landing() {
   const router = useRouter()
-  const { signInDemo } = useAuth()
   const [showAuth, setShowAuth] = useState(false)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
 
   const handleGetStarted = () => {
-    // For demo purposes, sign user in and go to dashboard
-    signInDemo()
+    // For now, just go to dashboard without demo sign-in
     router.push('/dashboard')
   }
 

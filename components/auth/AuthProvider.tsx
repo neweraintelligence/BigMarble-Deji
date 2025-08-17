@@ -13,7 +13,6 @@ interface AuthContextType {
   signOut: () => Promise<void>
   signIn: (email: string, password: string) => Promise<{ error?: string }>
   signUp: (email: string, password: string, displayName: string, workshopCode?: string) => Promise<{ error?: string }>
-  signInDemo: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
 
@@ -86,60 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const signInDemo = async () => {
-    try {
-      // For demo purposes, create a mock user session
-      const mockUser = {
-        id: 'demo-user-id',
-        email: 'demo@bigmarblefarms.com',
-        user_metadata: {
-          full_name: 'Demo User'
-        },
-        app_metadata: {},
-        aud: 'authenticated',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        email_confirmed_at: new Date().toISOString(),
-        last_sign_in_at: new Date().toISOString(),
-        role: 'authenticated',
-        confirmation_sent_at: undefined,
-        confirmed_at: undefined,
-        deleted_at: undefined,
-        email_change_confirm_status: 0,
-        banned_until: undefined,
-        reauthentication_sent_at: undefined,
-        recovery_sent_at: undefined,
-        phone_change_confirm_status: 0,
-        phone_confirmed_at: undefined,
-        phone_change_sent_at: undefined,
-        phone: undefined,
-        factors: undefined,
-        identities: []
-      } as unknown as User
-      
-      setUser(mockUser)
-      
-      // Create a mock profile
-      const mockProfile = {
-        id: 'demo-profile-id',
-        user_id: 'demo-user-id',
-        email: 'demo@bigmarblefarms.com',
-        full_name: 'Demo User',
-        role: 'participant' as const,
-        company_position: 'Demo Participant',
-        avatar_url: null,
-        onboarding_completed: true,
-        workshop_cohort: 'demo-cohort',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      } as Profile
-      
-      setProfile(mockProfile)
-    } catch (error) {
-      console.error('Error signing in demo user:', error)
-    }
-  }
-
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -182,7 +127,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     signIn,
     signUp,
-    signInDemo,
     refreshProfile
   }
 
