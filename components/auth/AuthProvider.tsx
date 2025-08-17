@@ -13,6 +13,7 @@ interface AuthContextType {
   signOut: () => Promise<void>
   signIn: (email: string, password: string) => Promise<{ error?: string }>
   signUp: (email: string, password: string, displayName: string, workshopCode?: string) => Promise<{ error?: string }>
+  signInDemo: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
 
@@ -85,6 +86,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const signInDemo = async () => {
+    try {
+      // For demo purposes, create a mock user session
+      const mockUser = {
+        id: 'demo-user-id',
+        email: 'demo@bigmarblefarms.com',
+        user_metadata: {
+          full_name: 'Demo User'
+        }
+      } as User
+      
+      setUser(mockUser)
+      
+      // Create a mock profile
+      const mockProfile = {
+        id: 'demo-profile-id',
+        user_id: 'demo-user-id',
+        full_name: 'Demo User',
+        role: 'participant',
+        title: 'Demo Participant',
+        workshop_cohort: 'demo-cohort',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as Profile
+      
+      setProfile(mockProfile)
+    } catch (error) {
+      console.error('Error signing in demo user:', error)
+    }
+  }
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -127,6 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     signIn,
     signUp,
+    signInDemo,
     refreshProfile
   }
 
