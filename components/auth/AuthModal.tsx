@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Mail, Lock, User, Briefcase } from 'lucide-react'
+import { X, Mail, Lock, User } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import { toast } from 'react-hot-toast'
@@ -13,20 +13,10 @@ interface AuthModalProps {
   onModeChange: (mode: 'signin' | 'signup') => void
 }
 
-const roleOptions = [
-  { value: 'president', label: 'President/CEO' },
-  { value: 'cmo', label: 'Chief Marketing Officer' },
-  { value: 'consultant', label: 'Consultant' },
-  { value: 'ops_manager', label: 'Operations Manager' },
-  { value: 'tech_lead', label: 'Technology Lead' }
-]
-
 export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
-  const [role, setRole] = useState('')
-  const [position, setPosition] = useState('')
   const [loading, setLoading] = useState(false)
 
   if (!isOpen) return null
@@ -65,8 +55,8 @@ export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProp
         options: {
           data: {
             full_name: fullName,
-            role: role,
-            company_position: position,
+            role: 'participant',
+            company_position: null,
             workshop_cohort: 'BMF2024'
           }
         }
@@ -103,59 +93,22 @@ export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProp
         <div className="p-6">
           <form onSubmit={mode === 'signin' ? handleSignIn : handleSignUp} className="space-y-4">
             {mode === 'signup' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-marble-700 mb-2">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-marble-400" />
-                    <input
-                      type="text"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-marble-300 rounded-lg focus:ring-2 focus:ring-greenhouse-500 focus:border-transparent"
-                      placeholder="Enter your full name"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-marble-700 mb-2">
-                    Role
-                  </label>
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="w-full px-4 py-2 border border-marble-300 rounded-lg focus:ring-2 focus:ring-greenhouse-500 focus:border-transparent"
+              <div>
+                <label className="block text-sm font-medium text-marble-700 mb-2">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-marble-400" />
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-marble-300 rounded-lg focus:ring-2 focus:ring-greenhouse-500 focus:border-transparent"
+                    placeholder="Enter your full name"
                     required
-                  >
-                    <option value="">Select your role</option>
-                    {roleOptions.map(option => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-marble-700 mb-2">
-                    Position/Title (Optional)
-                  </label>
-                  <div className="relative">
-                    <Briefcase className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-marble-400" />
-                    <input
-                      type="text"
-                      value={position}
-                      onChange={(e) => setPosition(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-marble-300 rounded-lg focus:ring-2 focus:ring-greenhouse-500 focus:border-transparent"
-                      placeholder="Your specific title"
-                    />
-                  </div>
-                </div>
-              </>
+              </div>
             )}
 
             <div>
