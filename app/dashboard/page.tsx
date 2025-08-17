@@ -9,6 +9,7 @@ import { DashboardStats } from '@/components/dashboard/DashboardStats'
 import { ModuleGrid } from '@/components/modules/ModuleGrid'
 import { RecentActivity } from '@/components/dashboard/RecentActivity'
 import { WorkshopOverview } from '@/components/dashboard/WorkshopOverview'
+import { QuizLeaderboardWidget } from '@/components/dashboard/QuizLeaderboardWidget'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { getUserStats, getModulesForRole, getUserProgress } from '@/lib/supabase'
 import { Module, UserProgress } from '@/types/database'
@@ -169,32 +170,40 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Modules Grid (clickable) */}
-        <div>
-          <h2 className="text-2xl font-bold text-marble-900 mb-4">Your Modules</h2>
-          <ModuleGrid modules={currentModules} progress={progress} />
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4">
-              <button
-                onClick={goToPrevPage}
-                disabled={currentPage === 0}
-                className="px-4 py-2 rounded-lg border border-marble-300 text-marble-700 disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <div className="text-sm text-marble-600">
-                Page {currentPage + 1} of {totalPages}
+        {/* Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Modules Section */}
+          <div className="lg:col-span-2">
+            <h2 className="text-2xl font-bold text-marble-900 mb-4">Your Modules</h2>
+            <ModuleGrid modules={currentModules} progress={progress} />
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4">
+                <button
+                  onClick={goToPrevPage}
+                  disabled={currentPage === 0}
+                  className="px-4 py-2 rounded-lg border border-marble-300 text-marble-700 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <div className="text-sm text-marble-600">
+                  Page {currentPage + 1} of {totalPages}
+                </div>
+                <button
+                  onClick={goToNextPage}
+                  disabled={currentPage >= totalPages - 1}
+                  className="px-4 py-2 rounded-lg border border-marble-300 text-marble-700 disabled:opacity-50"
+                >
+                  Next
+                </button>
               </div>
-              <button
-                onClick={goToNextPage}
-                disabled={currentPage >= totalPages - 1}
-                className="px-4 py-2 rounded-lg border border-marble-300 text-marble-700 disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Sidebar - Quiz Leaderboard */}
+          <div className="lg:col-span-1">
+            <QuizLeaderboardWidget />
+          </div>
         </div>
 
         {/* Current Access Section at the bottom */}

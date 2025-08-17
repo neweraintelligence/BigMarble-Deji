@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { supabase, getProfile } from '@/lib/supabase'
 import { Profile } from '@/types/database'
 
 interface AuthContextType {
@@ -11,7 +11,8 @@ interface AuthContextType {
   profile: Profile | null
   loading: boolean
   signOut: () => Promise<void>
-  signInDemo: () => void
+  signIn: (email: string, password: string) => Promise<{ error?: string }>
+  signUp: (email: string, password: string, displayName: string, workshopCode?: string) => Promise<{ error?: string }>
   refreshProfile: () => Promise<void>
 }
 
@@ -19,86 +20,113 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  
-  // Mock user and profile data for demo
-  const mockUser = {
-    id: 'demo-user-123',
-    email: 'Demo@bigmarble.ca'
-  }
-  
-  const mockProfile = {
-    id: 'demo-user-123',
-    email: 'Demo@bigmarble.ca',
-    full_name: 'Big Marble Farms User',
-    role: 'marketing_manager',
-    company_position: 'Marketing Manager',
-    onboarding_completed: true,
-    created_at: new Date().toISOString()
-  }
-  
-  const [user, setUser] = useState<any>(mockUser)
-  const [profile, setProfile] = useState<any>(mockProfile)
-  const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
+  const [loading, setLoading] = useState(true)
 
   const refreshProfile = async () => {
-    // Mock profile refresh
-    setProfile(mockProfile)
+    if (!user) return
+    try {
+      const userProfile = await getProfile(user.id)
+      setProfile(userProfile)
+    } catch (error) {
+      console.error('Error refreshing profile:', error)
+    }
   }
 
   const signOut = async () => {
-    setUser(null)
-    setProfile(null)
-    router.push('/')
+    try {
+      await supabase.client.auth.signOut()
+      setUser(null)
+      setProfile(null)
+      router.push('/')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
-  const signInDemo = () => {
-    // Restore mock user for demo
-    setUser(mockUser)
-    setProfile(mockProfile)
+  const signIn = async (email: string, password: string) => {
+    try {
+      const { data, error } = await supabase.client.auth.signInWithPassword({
+        email,
+        password
+      })
+      
+      if (error) {
+        return { error: error.message }
+      }
+      
+      return {}
+    } catch (error) {
+      return { error: 'An unexpected error occurred' }
+    }
   }
 
-  // Demo mode - skip auth initialization
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     try {
-  //       const { data: { user } } = await supabase.auth.getUser()
-  //       setUser(user)
-  //       
-  //       if (user) {
-  //         await refreshProfile()
-  //       }
-  //     } catch (error) {
-  //       console.error('Error getting user:', error)
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   }
+  const signUp = async (email: string, password: string, displayName: string, workshopCode?: string) => {
+    try {
+      const { data, error } = await supabase.client.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: displayName,
+            workshop_cohort: workshopCode || 'default'
+          }
+        }
+      })
+      
+      if (error) {
+        return { error: error.message }
+      }
+      
+      return {}
+    } catch (error) {
+      return { error: 'An unexpected error occurred' }
+    }
+  }
 
-  //   getUser()
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: { user } } = await supabase.client.auth.getUser()
+        setUser(user)
+        
+        if (user) {
+          await refreshProfile()
+        }
+      } catch (error) {
+        console.error('Error getting user:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  //   const { data: { subscription } } = supabase.auth.onAuthStateChange(
-  //     async (event, session) => {
-  //       setUser(session?.user ?? null)
-  //       
-  //       if (session?.user) {
-  //         await refreshProfile()
-  //       } else {
-  //         setProfile(null)
-  //       }
-  //       
-  //       setLoading(false)
-  //     }
-  //   )
+    getUser()
 
-  //   return () => subscription.unsubscribe()
-  // }, [])
+    const { data: { subscription } } = supabase.client.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          await refreshProfile()
+        } else {
+          setProfile(null)
+        }
+        
+        setLoading(false)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const value = {
     user,
     profile,
     loading,
     signOut,
-    signInDemo,
+    signIn,
+    signUp,
     refreshProfile
   }
 

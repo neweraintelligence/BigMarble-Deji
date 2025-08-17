@@ -24,15 +24,22 @@ export const supabase = {
 
 // Helper functions for common database operations
 export async function getProfile(userId: string) {
-  // Mock data for demo
-  return {
-    id: userId,
-    email: 'demo@bigmarblefarms.com',
-    full_name: 'Big Marble Farms User',
-    role: 'president',
-    company_position: 'CEO',
-    onboarding_completed: true,
-    created_at: new Date().toISOString()
+  try {
+    const { data, error } = await supabase.client
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
+
+    if (error) {
+      console.error('Error fetching profile:', error)
+      return null
+    }
+
+    return data
+  } catch (error) {
+    console.error('Error in getProfile:', error)
+    return null
   }
 }
 
@@ -340,11 +347,211 @@ export async function saveToolSelection(userId: string, toolId: string, priority
 }
 
 export async function getUserStats(userId: string) {
-  // Mock stats aligned with updated module list
-  return {
-    modules_completed: 2,
-    total_modules: 11,
-    time_spent_minutes: 180,
-    progress_percentage: 18
+  try {
+    // Get modules completed count
+    const { data: progress } = await supabase.client
+      .from('user_progress')
+      .select('status')
+      .eq('user_id', userId)
+      .eq('status', 'completed')
+
+    // Get quiz attempts for score calculation
+    const { data: quizAttempts } = await supabase.client
+      .from('quiz_attempts')
+      .select('score, total_questions, time_taken_ms')
+      .eq('user_id', userId)
+
+    const modulesCompleted = progress?.length || 0
+    const totalQuizScore = quizAttempts?.reduce((sum, attempt) => sum + attempt.score, 0) || 0
+    const totalTimeSpent = quizAttempts?.reduce((sum, attempt) => sum + (attempt.time_taken_ms || 0), 0) || 0
+
+    return {
+      modules_completed: modulesCompleted,
+      total_modules: 11,
+      time_spent_minutes: Math.round(totalTimeSpent / 60000), // Convert ms to minutes
+      progress_percentage: Math.round((modulesCompleted / 11) * 100),
+      total_quiz_score: totalQuizScore,
+      quiz_attempts: quizAttempts?.length || 0
+    }
+  } catch (error) {
+    console.error('Error fetching user stats:', error)
+    // Fallback to mock data
+    return {
+      modules_completed: 0,
+      total_modules: 11,
+      time_spent_minutes: 0,
+      progress_percentage: 0,
+      total_quiz_score: 0,
+      quiz_attempts: 0
+    }
+  }
+}
+
+// Quiz-related functions
+export async function createQuizAttempt(data: {
+  userId: string
+  quizKey: string
+  moduleId?: string
+  sessionId?: string
+  score: number
+  totalQuestions: number
+  timeTakenMs?: number
+}) {
+  try {
+    const { data: attempt, error } = await supabase.client
+      .from('quiz_attempts')
+      .insert({
+        user_id: data.userId,
+        quiz_key: data.quizKey,
+        module_id: data.moduleId,
+        session_id: data.sessionId,
+        score: data.score,
+        total_questions: data.totalQuestions,
+        time_taken_ms: data.timeTakenMs,
+        completed_at: new Date().toISOString()
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+    return attempt
+  } catch (error) {
+    console.error('Error creating quiz attempt:', error)
+    throw error
+  }
+}
+
+export async function recordQuizAnswer(data: {
+  attemptId: string
+  questionId: string
+  answer: string
+  isCorrect: boolean
+  timeTakenMs?: number
+}) {
+  try {
+    const { data: answer, error } = await supabase.client
+      .from('quiz_answers')
+      .insert({
+        attempt_id: data.attemptId,
+        question_id: data.questionId,
+        answer: data.answer,
+        is_correct: data.isCorrect,
+        time_taken_ms: data.timeTakenMs
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+    return answer
+  } catch (error) {
+    console.error('Error recording quiz answer:', error)
+    throw error
+  }
+}
+
+export async function getQuizLeaderboard(sessionId?: string, quizKey?: string, limit = 10) {
+  try {
+    let query = supabase.client
+      .from('quiz_attempts')
+      .select(`
+        id,
+        user_id,
+        quiz_key,
+        score,
+        total_questions,
+        time_taken_ms,
+        completed_at,
+        profiles!inner(full_name, workshop_cohort)
+      `)
+      .order('score', { ascending: false })
+      .order('time_taken_ms', { ascending: true })
+      .limit(limit)
+
+    if (sessionId) {
+      query = query.eq('session_id', sessionId)
+    }
+    if (quizKey) {
+      query = query.eq('quiz_key', quizKey)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw error
+
+    return data?.map((attempt, index) => ({
+      rank: index + 1,
+      participantId: attempt.user_id,
+      participantName: attempt.profiles.full_name,
+      score: attempt.score,
+      total: attempt.total_questions,
+      avgTimeMs: attempt.time_taken_ms || 0,
+      completedAt: attempt.completed_at
+    })) || []
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error)
+    return []
+  }
+}
+
+export async function getUserQuizAttempts(userId: string, quizKey?: string) {
+  try {
+    let query = supabase.client
+      .from('quiz_attempts')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (quizKey) {
+      query = query.eq('quiz_key', quizKey)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error('Error fetching user quiz attempts:', error)
+    return []
+  }
+}
+
+export async function getQuizSessions() {
+  try {
+    const { data, error } = await supabase.client
+      .from('quiz_sessions')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data || []
+  } catch (error) {
+    console.error('Error fetching quiz sessions:', error)
+    return []
+  }
+}
+
+export async function createQuizSession(data: {
+  sessionCode: string
+  name: string
+  workshopCohort?: string
+}) {
+  try {
+    const { data: session, error } = await supabase.client
+      .from('quiz_sessions')
+      .insert({
+        session_code: data.sessionCode,
+        name: data.name,
+        workshop_cohort: data.workshopCohort,
+        is_active: true
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+    return session
+  } catch (error) {
+    console.error('Error creating quiz session:', error)
+    throw error
   }
 }

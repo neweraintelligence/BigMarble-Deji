@@ -12,16 +12,10 @@ services:
         value: production
       - key: NEXT_TELEMETRY_DISABLED
         value: 1
-    # Add your environment variables here as needed:
+    # Supabase environment variables - you'll need to add these in Render dashboard
     # - key: NEXT_PUBLIC_SUPABASE_URL
-    #   fromService:
-    #     type: pserv
-    #     name: your-supabase-url
+    #   value: your-supabase-project-url
     # - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-    #   fromService:
-    #     type: pserv
-    #     name: your-supabase-anon-key
-    # - key: OPENAI_API_KEY
-    #   fromService:
-    #     type: pserv
-    #     name: your-openai-api-key
+    #   value: your-supabase-anon-key
+    # - key: SUPABASE_SERVICE_ROLE_KEY
+    #   value: your-supabase-service-role-key

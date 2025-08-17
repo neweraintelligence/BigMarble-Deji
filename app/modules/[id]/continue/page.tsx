@@ -251,7 +251,17 @@ export default function ContinueModulePage({ params }: PageProps) {
                   ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                       <div className="lg:col-span-2">
-                        <QuizRunner defaultQuizKey="session1_final" onFinished={() => {}} />
+                        <QuizRunner 
+                          defaultQuizKey="session1_final" 
+                          moduleId={id}
+                          sessionId={sessionId}
+                          onFinished={(summary) => {
+                            console.log('Quiz finished:', summary)
+                            // Update local score state
+                            setScore(score + summary.score)
+                            setCompletedQuizzes(completedQuizzes + 1)
+                          }} 
+                        />
                       </div>
                       <div>
                         <Leaderboard sessionId={sessionId} quizKey="session1_final" />

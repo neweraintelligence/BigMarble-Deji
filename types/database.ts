@@ -269,6 +269,102 @@ export interface Database {
           updated_at?: string
         }
       }
+      quiz_attempts: {
+        Row: {
+          id: string
+          user_id: string
+          quiz_key: string
+          module_id: string | null
+          session_id: string | null
+          score: number
+          total_questions: number
+          time_taken_ms: number | null
+          completed_at: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          quiz_key: string
+          module_id?: string | null
+          session_id?: string | null
+          score: number
+          total_questions: number
+          time_taken_ms?: number | null
+          completed_at?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          quiz_key?: string
+          module_id?: string | null
+          session_id?: string | null
+          score?: number
+          total_questions?: number
+          time_taken_ms?: number | null
+          completed_at?: string
+          created_at?: string
+        }
+      }
+      quiz_answers: {
+        Row: {
+          id: string
+          attempt_id: string
+          question_id: string
+          answer: string
+          is_correct: boolean
+          time_taken_ms: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          attempt_id: string
+          question_id: string
+          answer: string
+          is_correct: boolean
+          time_taken_ms?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          attempt_id?: string
+          question_id?: string
+          answer?: string
+          is_correct?: boolean
+          time_taken_ms?: number | null
+          created_at?: string
+        }
+      }
+      quiz_sessions: {
+        Row: {
+          id: string
+          session_code: string
+          name: string
+          workshop_cohort: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          session_code: string
+          name: string
+          workshop_cohort?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          session_code?: string
+          name?: string
+          workshop_cohort?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -293,6 +389,9 @@ export type ChatSession = Database['public']['Tables']['chat_sessions']['Row']
 export type ChatMessage = Database['public']['Tables']['chat_messages']['Row']
 export type AITool = Database['public']['Tables']['ai_tools']['Row']
 export type PilotRoadmap = Database['public']['Tables']['pilot_roadmaps']['Row']
+export type QuizAttempt = Database['public']['Tables']['quiz_attempts']['Row']
+export type QuizAnswer = Database['public']['Tables']['quiz_answers']['Row']
+export type QuizSession = Database['public']['Tables']['quiz_sessions']['Row']
 
 // Application-specific types
 export interface ModuleContent {

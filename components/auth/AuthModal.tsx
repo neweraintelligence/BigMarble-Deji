@@ -36,14 +36,20 @@ export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProp
     setLoading(true)
 
     try {
-      // Demo mode - just simulate successful login
-      setTimeout(() => {
-        toast.success('Welcome back to the demo!')
+      const { data, error } = await supabase.client.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) {
+        toast.error(error.message)
+      } else {
+        toast.success('Welcome back!')
         onClose()
-        setLoading(false)
-      }, 1000)
+      }
     } catch (error) {
       toast.error('Something went wrong')
+    } finally {
       setLoading(false)
     }
   }
@@ -53,14 +59,28 @@ export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProp
     setLoading(true)
 
     try {
-      // Demo mode - just simulate successful signup
-      setTimeout(() => {
-        toast.success('Demo account created! Welcome to Big Marble Farms AI Portal.')
+      const { data, error } = await supabase.client.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: role,
+            company_position: position,
+            workshop_cohort: 'BMF2024'
+          }
+        }
+      })
+
+      if (error) {
+        toast.error(error.message)
+      } else {
+        toast.success('Account created! Please check your email to verify your account.')
         onClose()
-        setLoading(false)
-      }, 1000)
+      }
     } catch (error) {
       toast.error('Something went wrong')
+    } finally {
       setLoading(false)
     }
   }

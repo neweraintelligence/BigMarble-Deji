@@ -95,12 +95,90 @@ Contains all environment variables you might need. Copy relevant ones to your Re
 ✅ **Responsive Design**: Works on mobile and desktop  
 ✅ **AI Tools Explorer**: Browse tools without authentication  
 ✅ **Course Materials**: View training session content  
+✅ **User Authentication**: Individual sign up/sign in system
+✅ **Competitive Quizzes**: Score tracking and leaderboards
+✅ **Real-time Leaderboard**: Live ranking updates
+✅ **Module Progress**: Track completion and quiz scores
 
-## Features Requiring Configuration
+## Features Requiring Configuration (IMPORTANT!)
 
-🔧 **Authentication**: Requires Supabase or Auth0 setup  
-🔧 **AI Chat**: Requires OpenAI API key  
-🔧 **Database**: Requires Supabase configuration  
+🔧 **Supabase Database**: Required for user accounts, quiz scores, and leaderboards  
+🔧 **Authentication**: Supabase auth must be configured  
+🔧 **AI Chat**: Requires OpenAI API key (optional)
+
+## CRITICAL: Supabase Setup for Quiz System
+
+**You MUST set up Supabase for the competitive quiz system to work:**
+
+1. **Create Supabase Project**: Go to [supabase.com](https://supabase.com)
+2. **Run SQL Setup**: Execute the following SQL in your Supabase SQL Editor:
+
+```sql
+-- Create quiz_attempts table
+CREATE TABLE quiz_attempts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  quiz_key TEXT NOT NULL,
+  module_id TEXT,
+  session_id TEXT,
+  score INTEGER NOT NULL DEFAULT 0,
+  total_questions INTEGER NOT NULL,
+  time_taken_ms INTEGER,
+  completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create quiz_answers table
+CREATE TABLE quiz_answers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  attempt_id UUID REFERENCES quiz_attempts(id) ON DELETE CASCADE,
+  question_id TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  is_correct BOOLEAN NOT NULL DEFAULT false,
+  time_taken_ms INTEGER,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add workshop_cohort to profiles
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS workshop_cohort TEXT DEFAULT 'BMF2024';
+
+-- Create indexes
+CREATE INDEX idx_quiz_attempts_user_id ON quiz_attempts(user_id);
+CREATE INDEX idx_quiz_attempts_score ON quiz_attempts(score DESC);
+
+-- Enable RLS
+ALTER TABLE quiz_attempts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE quiz_answers ENABLE ROW LEVEL SECURITY;
+
+-- Create policies
+CREATE POLICY "Users can view all quiz attempts" ON quiz_attempts FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Users can insert own attempts" ON quiz_attempts FOR INSERT TO authenticated WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can view quiz answers" ON quiz_answers FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Users can insert own answers" ON quiz_answers FOR INSERT TO authenticated WITH CHECK (
+  EXISTS (SELECT 1 FROM quiz_attempts WHERE quiz_attempts.id = attempt_id AND quiz_attempts.user_id = auth.uid())
+);
+```
+
+3. **Add Environment Variables to Render**:
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## Workshop Usage Instructions
+
+**For Participants:**
+1. Visit the deployed URL
+2. Click "Create Account" 
+3. Use workshop code "BMF2024"
+4. Complete modules and quizzes
+5. Compete on the leaderboard!
+
+**For Instructors:**
+- Share ONE URL with all participants
+- Each person creates their own account
+- Monitor real-time leaderboard for engagement
+- Track individual progress through dashboard  
 
 ## Custom Domain (Optional)
 
