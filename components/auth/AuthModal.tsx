@@ -55,7 +55,7 @@ export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProp
         options: {
           data: {
             full_name: fullName,
-            role: 'participant',
+            role: 'consultant',
             company_position: null,
             workshop_cohort: 'BMF2024'
           }
