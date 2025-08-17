@@ -94,7 +94,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: 'demo@bigmarblefarms.com',
         user_metadata: {
           full_name: 'Demo User'
-        }
+        },
+        app_metadata: {},
+        aud: 'authenticated',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        email_confirmed_at: new Date().toISOString(),
+        last_sign_in_at: new Date().toISOString(),
+        role: 'authenticated',
+        confirmation_sent_at: null,
+        confirmed_at: null,
+        deleted_at: null,
+        email_change_confirm_status: 0,
+        banned_until: null,
+        reauthentication_sent_at: null,
+        recovery_sent_at: null,
+        phone_change_confirm_status: 0,
+        phone_confirmed_at: null,
+        phone_change_sent_at: null,
+        phone: null,
+        factors: null,
+        identities: []
       } as User
       
       setUser(mockUser)
@@ -103,9 +123,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const mockProfile = {
         id: 'demo-profile-id',
         user_id: 'demo-user-id',
+        email: 'demo@bigmarblefarms.com',
         full_name: 'Demo User',
-        role: 'participant',
-        title: 'Demo Participant',
+        role: 'participant' as const,
+        company_position: 'Demo Participant',
+        avatar_url: null,
+        onboarding_completed: true,
         workshop_cohort: 'demo-cohort',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
