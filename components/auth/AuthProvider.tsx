@@ -102,20 +102,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email_confirmed_at: new Date().toISOString(),
         last_sign_in_at: new Date().toISOString(),
         role: 'authenticated',
-        confirmation_sent_at: null,
-        confirmed_at: null,
-        deleted_at: null,
+        confirmation_sent_at: undefined,
+        confirmed_at: undefined,
+        deleted_at: undefined,
         email_change_confirm_status: 0,
-        banned_until: null,
-        reauthentication_sent_at: null,
-        recovery_sent_at: null,
+        banned_until: undefined,
+        reauthentication_sent_at: undefined,
+        recovery_sent_at: undefined,
         phone_change_confirm_status: 0,
-        phone_confirmed_at: null,
-        phone_change_sent_at: null,
-        phone: null,
-        factors: null,
+        phone_confirmed_at: undefined,
+        phone_change_sent_at: undefined,
+        phone: undefined,
+        factors: undefined,
         identities: []
-      } as User
+      } as unknown as User
       
       setUser(mockUser)
       
