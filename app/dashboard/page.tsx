@@ -31,6 +31,21 @@ export default function DashboardPage() {
   const [modulesPerPage, setModulesPerPage] = useState(6)
 
   useEffect(() => {
+    // Skip auth check in development mode without Supabase
+    if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      setLoading(false)
+      // Set mock modules for development
+      setModules([
+        { id: '1', title: 'Introduction to AI', status: 'completed', order_index: 1 },
+        { id: '2', title: 'Greenhouse Automation', status: 'in_progress', order_index: 2 },
+        { id: '3', title: 'Data Analytics', status: 'not_started', order_index: 3 },
+        { id: '4', title: 'Machine Learning Basics', status: 'not_started', order_index: 4 },
+        { id: '5', title: 'IoT Sensors', status: 'not_started', order_index: 5 },
+        { id: '6', title: 'Advanced AI Applications', status: 'not_started', order_index: 6 }
+      ])
+      return
+    }
+    
     if (!authLoading && !user) {
       router.push('/')
       return
@@ -116,7 +131,10 @@ export default function DashboardPage() {
     )
   }
 
-  if (!user || !profile) {
+  // Allow dashboard in development mode without auth
+  if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    // Continue to render dashboard with mock data
+  } else if (!user || !profile) {
     return null
   }
 

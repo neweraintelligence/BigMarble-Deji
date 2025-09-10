@@ -88,6 +88,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const getUser = async () => {
       try {
+        // Development bypass - auto-login with mock user
+        if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+          const mockUser = {
+            id: 'dev-user-123',
+            email: 'dev@bigmarblefarms.com',
+            app_metadata: {},
+            user_metadata: { full_name: 'Dev User' },
+            aud: 'authenticated',
+            created_at: new Date().toISOString()
+          } as User
+          
+          setUser(mockUser)
+          setProfile({
+            id: 'dev-user-123',
+            email: 'dev@bigmarblefarms.com',
+            full_name: 'Dev User',
+            role: 'consultant',
+            workshop_cohort: 'DEV-2024',
+            onboarding_completed: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          } as Profile)
+          setLoading(false)
+          return
+        }
+        
         const { data: { user } } = await supabase.client.auth.getUser()
         setUser(user)
         

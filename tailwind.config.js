@@ -16,6 +16,12 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        'montserrat': ['Montserrat', 'system-ui', 'sans-serif'],
+        'lora': ['Lora', 'Georgia', 'serif'],
+        'hind': ['Hind Madurai', 'system-ui', 'sans-serif'],
+        'sans': ['Hind Madurai', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

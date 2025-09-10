@@ -1,121 +1,29 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight, Play, Pause, CheckCircle, XCircle, BarChart3, BookOpen, Target, Clock } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Play, Pause, CheckCircle, XCircle, BarChart3, BookOpen, Target, Clock, MessageSquare, Monitor, Maximize2, Users, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import { JoinSessionModal } from '@/components/quiz/JoinSessionModal'
 import { Leaderboard } from '@/components/quiz/Leaderboard'
 import { QuizRunner } from '@/components/quiz/QuizRunner'
+import { workshopSlides, sections, getSlidesBySection, getSectionDuration, WorkshopSlide } from '@/lib/workshopSlides'
+import { TemperatureControl } from '@/components/visualizations/TemperatureControl'
+import { ContextWindow } from '@/components/visualizations/ContextWindow'
+import { ROICalculator } from '@/components/visualizations/ROICalculator'
+import { GreenhouseControl } from '@/components/visualizations/GreenhouseControl'
+import { AITaxonomyFlowchart } from '@/components/visualizations/AITaxonomyFlowchart'
+import { GenerativeAIModalitiesFlowchart } from '@/components/visualizations/GenerativeAIModalitiesFlowchart'
+import { PromptExamples } from '@/components/visualizations/PromptExamples'
+import { PromptEngineeringExamples } from '@/components/visualizations/PromptEngineeringExamples'
+import { AIGreenhouseDemo } from '@/components/visualizations/AIGreenhouseDemo'
+import { DocumentProcessingDemo } from '@/components/visualizations/DocumentProcessingDemo'
+import { DigitalTwinAIDemo } from '@/components/visualizations/DigitalTwinAIDemo'
 
 interface PageProps {
   params: {
     id: string
   }
 }
-
-interface Slide {
-  id: number
-  title: string
-  content: string
-  type: 'slide' | 'quiz' | 'visualization'
-  options?: string[]
-  correctAnswer?: number
-  visualization?: {
-    type: 'chart' | 'diagram' | 'interactive'
-    data?: any
-  }
-}
-
-const courseContent: Slide[] = [
-  {
-    id: 1,
-    title: "Strategic AI Evaluation Framework",
-    content: "Welcome to the Strategic AI Evaluation Framework. This comprehensive approach helps leaders assess AI tools through four key dimensions: Business Impact, Technical Feasibility, Risk Assessment, and Implementation Strategy.",
-    type: 'slide'
-  },
-  {
-    id: 2,
-    title: "Business Impact Analysis",
-    content: "The Business Impact dimension evaluates how AI tools align with your organization's strategic objectives. Consider ROI, competitive advantage, and market positioning.",
-    type: 'slide'
-  },
-  {
-    id: 3,
-    title: "AI Adoption Success Metrics",
-    content: "Key metrics for measuring AI adoption success include: Cost savings, Efficiency gains, Customer satisfaction, Employee productivity, and Innovation velocity.",
-    type: 'visualization',
-    visualization: {
-      type: 'chart',
-      data: {
-        labels: ['Cost Savings', 'Efficiency', 'Customer Satisfaction', 'Productivity', 'Innovation'],
-        values: [85, 92, 78, 88, 75]
-      }
-    }
-  },
-  {
-    id: 4,
-    title: "Technical Feasibility Assessment",
-    content: "Evaluate technical requirements, infrastructure needs, and integration complexity. Consider data quality, system compatibility, and technical expertise available.",
-    type: 'slide'
-  },
-  {
-    id: 5,
-    title: "Risk Assessment Framework",
-    content: "Identify and mitigate risks across data privacy, security, compliance, and operational continuity. Develop contingency plans for each risk category.",
-    type: 'slide'
-  },
-  {
-    id: 6,
-    title: "Implementation Strategy Quiz",
-    content: "Which factor is MOST critical when implementing AI tools in agriculture?",
-    type: 'quiz',
-    options: [
-      "Advanced technical infrastructure",
-      "Clear business objectives and ROI expectations",
-      "Employee resistance to change",
-      "Regulatory compliance requirements"
-    ],
-    correctAnswer: 1
-  },
-  {
-    id: 7,
-    title: "Leadership in AI Transformation",
-    content: "Successful AI transformation requires visionary leadership that can inspire change, manage resistance, and create a culture of continuous learning and innovation.",
-    type: 'slide'
-  },
-  {
-    id: 8,
-    title: "Change Management Success Factors",
-    content: "Effective change management in AI adoption includes: Clear communication, Training programs, Stakeholder engagement, Progress monitoring, and Celebrating wins.",
-    type: 'visualization',
-    visualization: {
-      type: 'diagram',
-      data: {
-        phases: ['Awareness', 'Desire', 'Knowledge', 'Ability', 'Reinforcement'],
-        success: [90, 85, 88, 82, 87]
-      }
-    }
-  },
-  {
-    id: 9,
-    title: "AI ROI Calculation",
-    content: "Calculate potential ROI by considering: Initial investment, Operational costs, Expected benefits, Time to value, and Risk factors.",
-    type: 'slide'
-  },
-  {
-    id: 10,
-    title: "Final Assessment",
-    content: "What is the primary goal of strategic AI evaluation?",
-    type: 'quiz',
-    options: [
-      "To implement the latest technology",
-      "To align AI investments with business strategy and drive measurable value",
-      "To reduce operational costs",
-      "To improve employee satisfaction"
-    ],
-    correctAnswer: 1
-  }
-]
 
 export default function ContinueModulePage({ params }: PageProps) {
   const { id } = params
@@ -128,13 +36,40 @@ export default function ContinueModulePage({ params }: PageProps) {
   const [joinOpen, setJoinOpen] = useState(false)
   const [sessionId, setSessionId] = useState<string>('')
   const [participantName, setParticipantName] = useState<string>('')
+  const [presenterMode, setPresenterMode] = useState(false)
+  const [elapsedTime, setElapsedTime] = useState(0)
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const [showSectionNav, setShowSectionNav] = useState(false)
 
-  const currentContent = courseContent[currentSlide]
-  const isQuiz = currentContent.type === 'quiz'
-  const isVisualization = currentContent.type === 'visualization'
+  const currentContent = workshopSlides[currentSlide]
+  const currentSection = sections.find(s => s.id === currentContent.sectionId)
+  const sectionSlides = getSlidesBySection(currentContent.sectionId)
+  const slideIndexInSection = sectionSlides.findIndex(s => s.id === currentContent.id)
+  const totalSlidesInSection = sectionSlides.length
+
+  // Calculate progress
+  const overallProgress = ((currentSlide + 1) / workshopSlides.length) * 100
+  const sectionProgress = ((slideIndexInSection + 1) / totalSlidesInSection) * 100
+
+  // Timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isTimerRunning) {
+      interval = setInterval(() => {
+        setElapsedTime(prev => prev + 1)
+      }, 1000)
+    }
+    return () => clearInterval(interval)
+  }, [isTimerRunning])
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
 
   const handleNext = () => {
-    if (currentSlide < courseContent.length - 1) {
+    if (currentSlide < workshopSlides.length - 1) {
       setCurrentSlide(currentSlide + 1)
       setSelectedAnswer(null)
       setShowResult(false)
@@ -147,6 +82,18 @@ export default function ContinueModulePage({ params }: PageProps) {
       setSelectedAnswer(null)
       setShowResult(false)
     }
+  }
+
+  const handleSectionJump = (sectionId: number) => {
+    const firstSlideInSection = workshopSlides.findIndex(s => s.sectionId === sectionId)
+    if (firstSlideInSection !== -1) {
+      setCurrentSlide(firstSlideInSection)
+      setShowSectionNav(false)
+    }
+  }
+
+  const handleSlideJump = (slideIndex: number) => {
+    setCurrentSlide(slideIndex)
   }
 
   const handleAnswerSelect = (answerIndex: number) => {
@@ -165,6 +112,18 @@ export default function ContinueModulePage({ params }: PageProps) {
     }
   }
 
+  // Get section color
+  const getSectionColor = (sectionId: number) => {
+    switch(sectionId) {
+      case 1: return 'blue'
+      case 2: return 'green'
+      case 3: return 'orange'
+      default: return 'gray'
+    }
+  }
+
+  const sectionColor = getSectionColor(currentContent.sectionId)
+
   useEffect(() => {
     const savedName = localStorage.getItem('bmf_display_name') || ''
     const savedSession = localStorage.getItem('bmf_session_id') || ''
@@ -172,16 +131,32 @@ export default function ContinueModulePage({ params }: PageProps) {
       setParticipantName(savedName)
       setSessionId(savedSession)
       setJoinOpen(false)
-    } else {
+    } else if (currentContent.type === 'quiz') {
       setJoinOpen(true)
     }
-  }, [])
+  }, [currentContent.type])
 
   const onJoined = (data: { participantId: string; displayName: string; sessionId: string }) => {
     setParticipantName(data.displayName)
     setSessionId(data.sessionId)
     setJoinOpen(false)
   }
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') handleNext()
+      if (e.key === 'ArrowLeft') handlePrevious()
+      if (e.key === 'f' && e.ctrlKey) setPresenterMode(!presenterMode)
+      if (e.key === ' ') {
+        e.preventDefault()
+        setIsTimerRunning(!isTimerRunning)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [currentSlide, presenterMode, isTimerRunning])
+
   return (
     <>
       <Image 
@@ -192,138 +167,408 @@ export default function ContinueModulePage({ params }: PageProps) {
         className="fixed top-4 right-4 w-12 h-12 object-contain z-10"
       />
       
-      <div className="min-h-screen bg-gradient-to-br from-greenhouse-50 to-marble-50">
-        {/* Header */}
+      <div className={`min-h-screen bg-gradient-to-br from-${sectionColor}-50 to-marble-50`}>
+        {/* Header with enhanced navigation */}
         <div className="bg-white shadow-sm border-b border-marble-200">
-          <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="w-full px-6 py-3">
+            {/* Progress bars */}
+            <div className="mb-2 max-w-6xl mx-auto">
+              <div className="flex items-center justify-between text-xs text-marble-600 mb-1">
+                <span>Progress</span>
+                <span>{Math.round(overallProgress)}%</span>
+              </div>
+              <div className="w-full bg-marble-200 rounded-full h-1.5">
+                <div 
+                  className="bg-gradient-to-r from-greenhouse-500 to-greenhouse-600 h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: `${overallProgress}%` }}
+                />
+              </div>
+            </div>
+
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-xl font-semibold text-marble-900">Module {id}: Strategic AI Tools Evaluation</h1>
-                <p className="text-sm text-marble-600">Interactive Learning Experience</p>
+                <h1 className="text-xl font-montserrat font-semibold text-marble-900">
+                  {currentSection?.icon} {currentContent.sectionName}
+                </h1>
+                <p className="text-sm font-hind text-marble-600">
+                  Slide {slideIndexInSection + 1} of {totalSlidesInSection} in section
+                </p>
               </div>
-              <div className="flex items-center space-x-4">
+
+              <div className="flex items-center space-x-4 mr-16">
+                {/* Section Navigator */}
+                <button
+                  onClick={() => setShowSectionNav(!showSectionNav)}
+                  className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-marble-100 hover:bg-marble-200 transition-colors"
+                >
+                  <span className="text-sm text-marble-700">Sections</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showSectionNav ? 'rotate-180' : ''}`} />
+                </button>
+
+                {/* Timer */}
                 <div className="flex items-center space-x-2">
-                  <BookOpen className="w-4 h-4 text-greenhouse-600" />
-                  <span className="text-sm text-marble-700">Slide {currentSlide + 1} of {courseContent.length}</span>
+                  <button
+                    onClick={() => setIsTimerRunning(!isTimerRunning)}
+                    className="p-1.5 rounded hover:bg-marble-100"
+                  >
+                    {isTimerRunning ? (
+                      <Pause className="w-4 h-4 text-marble-600" />
+                    ) : (
+                      <Play className="w-4 h-4 text-marble-600" />
+                    )}
+                  </button>
+                  <span className="text-sm font-mono text-marble-700">{formatTime(elapsedTime)}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Target className="w-4 h-4 text-greenhouse-600" />
-                  <span className="text-sm text-marble-700">{completedQuizzes}/{totalQuizzes} Quizzes</span>
-                </div>
-                <div className="hidden sm:flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-marble-600" />
-                  <span className="text-xs text-marble-600">{participantName ? `${participantName} · ${sessionId.replace('session-','Session ')}` : 'Not joined'}</span>
-                </div>
+
+                {/* Presenter Mode Toggle */}
+                <button
+                  onClick={() => setPresenterMode(!presenterMode)}
+                  className={`p-1.5 rounded ${presenterMode ? 'bg-blue-100 text-blue-600' : 'hover:bg-marble-100'}`}
+                  title="Toggle Presenter Mode (Ctrl+F)"
+                >
+                  <Monitor className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-lg border border-marble-200 overflow-hidden">
-            {/* Slide Content */}
-            <div className="p-8">
-              <div className="mb-6">
-                <div className="flex items-center space-x-2 mb-4">
-                  {isQuiz && <BarChart3 className="w-5 h-5 text-orange-500" />}
-                  {isVisualization && <BarChart3 className="w-5 h-5 text-blue-500" />}
-                  {!isQuiz && !isVisualization && <BookOpen className="w-5 h-5 text-greenhouse-500" />}
-                  <h2 className="text-2xl font-bold text-marble-900">{currentContent.title}</h2>
-                </div>
-                
-                <div className="prose prose-marble max-w-none">
-                  <p className="text-lg text-marble-700 leading-relaxed">{currentContent.content}</p>
+          {/* Section Navigation Dropdown */}
+          {showSectionNav && (
+            <div className="absolute top-full left-0 right-0 bg-white shadow-lg border-b border-marble-200 z-20">
+              <div className="max-w-7xl mx-auto px-4 py-4">
+                <div className="grid grid-cols-3 gap-4">
+                  {sections.map(section => {
+                    const sectionSlideCount = getSlidesBySection(section.id as 1 | 2 | 3).length
+                    const sectionDuration = getSectionDuration(section.id as 1 | 2 | 3)
+                    return (
+                      <button
+                        key={section.id}
+                        onClick={() => handleSectionJump(section.id)}
+                        className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
+                          currentContent.sectionId === section.id 
+                            ? `border-${section.color}-500 bg-${section.color}-50`
+                            : 'border-marble-200 hover:border-marble-300'
+                        }`}
+                      >
+                        <div className="text-2xl mb-2">{section.icon}</div>
+                        <div className="font-semibold text-marble-900">{section.name}</div>
+                        <div className="text-xs text-marble-600 mt-1">
+                          {sectionSlideCount} slides · {Math.round(sectionDuration / 60)} min
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
+            </div>
+          )}
+        </div>
 
-              {/* Quiz Section - replaced with competitive runner + leaderboard */}
-              {isQuiz && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-marble-900 mb-4">Competitive Quiz</h3>
-                  {!participantName || !sessionId ? (
-                    <button
-                      onClick={() => setJoinOpen(true)}
-                      className="bg-greenhouse-600 text-white px-4 py-2 rounded-lg"
-                    >
-                      Join Session to Start
-                    </button>
-                  ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      <div className="lg:col-span-2">
-                        <QuizRunner 
-                          defaultQuizKey="session1_final" 
-                          moduleId={id}
-                          sessionId={sessionId}
-                          onFinished={(summary) => {
-                            console.log('Quiz finished:', summary)
-                            // Update local score state
-                            setScore(score + summary.score)
-                            setCompletedQuizzes(completedQuizzes + 1)
-                          }} 
-                        />
-                      </div>
-                      <div>
-                        <Leaderboard sessionId={sessionId} quizKey="session1_final" />
-                      </div>
+        {/* Main Content Area - Full width with minimal padding */}
+        <div className="w-full px-6 py-3">
+          <div className="bg-white rounded-xl shadow-lg border border-marble-200 overflow-hidden min-h-[80vh]">
+            {/* Slide Content - Full height with consistent padding */}
+            <div className={`${presenterMode ? 'p-10' : 'p-12'} min-h-[calc(80vh-80px)] flex flex-col`}>
+              {/* Section Header Slide */}
+              {currentContent.type === 'section-header' && (
+                <div className="flex-1 flex items-center justify-center relative">
+                  <div className="text-center">
+                    {currentContent.imageUrl && (
+                      <Image 
+                        src={currentContent.imageUrl}
+                        alt={currentContent.title}
+                        width={150}
+                        height={150}
+                        className="mx-auto mb-8"
+                      />
+                    )}
+                    <h1 className="text-5xl font-montserrat font-bold text-marble-900 mb-6">{currentContent.title}</h1>
+                    <p className="text-2xl font-lora text-marble-700 max-w-4xl mx-auto">{currentContent.content}</p>
+                  </div>
+                  {currentContent.presenter && (
+                    <div className="absolute bottom-0 right-0 text-lg font-hind text-marble-600">
+                      {currentContent.presenter}
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Visualization Section */}
-              {isVisualization && currentContent.visualization && (
-                <div className="mt-6">
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-4">Interactive Visualization</h3>
-                    
-                    {currentContent.visualization?.type === 'chart' && currentContent.visualization?.data && (
-                      <div className="space-y-4">
-                        {currentContent.visualization?.data?.labels.map((label: string, index: number) => (
-                          <div key={index} className="flex items-center space-x-4">
-                            <div className="w-32 text-sm font-medium text-blue-700">{label}</div>
-                            <div className="flex-1">
-                              <div className="w-full bg-blue-200 rounded-full h-3">
-                                <div 
-                                  className="bg-gradient-to-r from-blue-500 to-indigo-500 h-3 rounded-full transition-all duration-1000"
-                                  style={{ width: `${currentContent.visualization?.data?.values[index]}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                            <div className="w-12 text-sm font-semibold text-blue-700 text-right">
-                              {currentContent.visualization?.data?.values[index]}%
-                            </div>
-                          </div>
-                        ))}
+              {/* Team Introduction Slide */}
+              {currentContent.type === 'team-intro' && (
+                <div className="flex-1 flex flex-col">
+                  <h2 className="text-4xl font-montserrat font-bold text-marble-900 mb-4 text-center">{currentContent.title}</h2>
+                  <p className="text-xl font-lora text-marble-700 mb-12 text-center">{currentContent.content}</p>
+                  
+                  <div className="flex-1 grid grid-cols-3 gap-8 items-center">
+                    {currentContent.teamMembers?.map((member, index) => (
+                      <div key={index} className="text-center">
+                        {member.image && (
+                          <Image 
+                            src={member.image}
+                            alt={member.name}
+                            width={180}
+                            height={180}
+                            className="mx-auto mb-6 rounded-full border-4 border-greenhouse-200"
+                          />
+                        )}
+                        <h3 className="text-2xl font-montserrat font-semibold text-marble-900 mb-2">
+                          {member.name}
+                        </h3>
+                        <p className="text-lg font-hind text-marble-600">
+                          {member.role}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Regular Slide */}
+              {currentContent.type === 'slide' && (
+                <div className="flex-1 flex flex-col">
+                  <h2 className="text-6xl font-montserrat font-bold text-marble-900 mb-6">{currentContent.title}</h2>
+                  {currentContent.subtitle && (
+                    <h3 className="text-3xl font-lora font-semibold text-marble-700 mb-8">{currentContent.subtitle}</h3>
+                  )}
+                  <p className="text-xl font-hind italic text-gray-500 mb-10">{currentContent.content}</p>
+                  
+                  <div className={`flex gap-8 flex-1 ${currentContent.imageUrl || currentContent.id === 14 || currentContent.id === 15 ? 'items-start' : ''}`}>
+                    {/* Left side - Content */}
+                    <div className={`${currentContent.imageUrl || currentContent.id === 14 || currentContent.id === 15 ? 'flex-1' : 'w-full'}`}>
+                      {currentContent.bulletPoints && (
+                        <ul className="space-y-4">
+                          {currentContent.bulletPoints.map((point, index) => (
+                            <li key={index} className="flex items-start">
+                              {point.trim().startsWith('◦') ? (
+                                <>
+                                  <span className="mr-6 mt-2 text-3xl invisible">•</span>
+                                  <span className="text-xl font-hind text-marble-700 leading-relaxed ml-4">
+                                    <span dangerouslySetInnerHTML={{
+                                      __html: point.replace(/^\s*◦\s*/, '◦ ').replace(/\*(.*?)\*/g, '<em>$1</em>')
+                                    }} />
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className={`text-${sectionColor}-500 mr-6 mt-2 text-3xl`}>•</span>
+                                  <span className="text-2xl font-hind text-marble-700 leading-relaxed">{point}</span>
+                                </>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+                    {/* Right side - Image or Prompt Examples */}
+                    {currentContent.imageUrl && (
+                      <div className="flex-1 flex items-center justify-center">
+                        <Image 
+                          src={currentContent.imageUrl}
+                          alt={currentContent.title}
+                          width={520}
+                          height={520}
+                          className="rounded-lg shadow-lg"
+                        />
                       </div>
                     )}
-                    
-                    {currentContent.visualization?.type === 'diagram' && currentContent.visualization?.data && (
-                      <div className="space-y-4">
-                        {currentContent.visualization?.data?.phases.map((phase: string, index: number) => (
-                          <div key={index} className="flex items-center space-x-4">
-                            <div className="w-32 text-sm font-medium text-blue-700">{phase}</div>
-                            <div className="flex-1">
-                              <div className="w-full bg-blue-200 rounded-full h-3">
-                                <div 
-                                  className="bg-gradient-to-r from-green-500 to-teal-500 h-3 rounded-full transition-all duration-1000"
-                                  style={{ width: `${currentContent.visualization?.data?.success[index]}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                            <div className="w-12 text-sm font-semibold text-blue-700 text-right">
-                              {currentContent.visualization?.data?.success[index]}%
-                            </div>
-                          </div>
-                        ))}
+                    {currentContent.id === 14 && !currentContent.imageUrl && (
+                      <div className="flex-1">
+                        <PromptExamples />
+                      </div>
+                    )}
+                    {currentContent.id === 15 && !currentContent.imageUrl && (
+                      <div className="flex-1">
+                        <PromptEngineeringExamples />
                       </div>
                     )}
                   </div>
                 </div>
               )}
+
+              {/* Quiz Slide */}
+              {currentContent.type === 'quiz' && (
+                <div className="flex-1 flex flex-col">
+                  <h2 className="text-5xl font-montserrat font-bold text-marble-900 mb-8">
+                    <BarChart3 className="inline w-12 h-12 text-orange-500 mr-4" />
+                    {currentContent.title}
+                  </h2>
+                  <p className="text-xl font-hind italic text-gray-500 mb-10">{currentContent.content}</p>
+                  
+                  <div className="space-y-4 flex-1">
+                    {currentContent.options?.map((option, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleAnswerSelect(index)}
+                        disabled={showResult}
+                        className={`w-full text-left p-6 rounded-lg border-2 transition-all text-2xl ${
+                          selectedAnswer === index
+                            ? showResult
+                              ? index === currentContent.correctAnswer
+                                ? 'border-green-500 bg-green-50'
+                                : 'border-red-500 bg-red-50'
+                              : 'border-blue-500 bg-blue-50'
+                            : 'border-marble-200 hover:border-marble-300'
+                        } ${showResult && index === currentContent.correctAnswer ? 'border-green-500 bg-green-50' : ''}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span>{option}</span>
+                          {showResult && index === currentContent.correctAnswer && (
+                            <CheckCircle className="w-5 h-5 text-green-600" />
+                          )}
+                          {showResult && selectedAnswer === index && index !== currentContent.correctAnswer && (
+                            <XCircle className="w-5 h-5 text-red-600" />
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {!showResult && selectedAnswer !== null && (
+                    <button
+                      onClick={handleSubmitAnswer}
+                      className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                      Submit Answer
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Discussion Slide */}
+              {currentContent.type === 'discussion' && (
+                <div className="flex-1 flex flex-col">
+                  <h2 className="text-5xl font-tanker text-marble-900 mb-8">
+                    <MessageSquare className="inline w-12 h-12 text-purple-500 mr-4" />
+                    {currentContent.title}
+                  </h2>
+                  <p className="text-xl font-hind italic text-gray-500 mb-10">{currentContent.content}</p>
+                  
+                  {currentContent.discussionPrompts && (
+                    <div className="bg-purple-50 rounded-lg p-8 border border-purple-200 flex-1">
+                      <h3 className="text-2xl font-lora font-semibold text-purple-900 mb-8">Discussion Points:</h3>
+                      <ul className="space-y-4">
+                        {currentContent.discussionPrompts.map((prompt, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="text-purple-600 mr-6 text-2xl font-montserrat font-semibold">{index + 1}.</span>
+                            <span className="text-2xl font-hind text-purple-800">{prompt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {currentContent.bulletPoints && (
+                    <div className="mt-6">
+                      <h3 className="font-semibold text-marble-900 mb-3">Key Topics:</h3>
+                      <ul className="space-y-2">
+                        {currentContent.bulletPoints.map((point, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="text-purple-500 mr-3">•</span>
+                            <span className="text-marble-700">{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Visualization Slide */}
+              {currentContent.type === 'visualization' && (
+                <div className="flex-1 flex flex-col">
+                  <h2 className="text-5xl font-bold text-marble-900 mb-6">
+                    <BarChart3 className="inline w-12 h-12 text-blue-500 mr-4" />
+                    {currentContent.title}
+                  </h2>
+                  <p className="text-2xl text-marble-700 mb-8">{currentContent.content}</p>
+                  
+                  <div className="flex-1 bg-gradient-to-r from-blue-50 to-indigo-50 p-2 rounded-lg border border-blue-200 overflow-auto min-h-[600px]">
+                    {currentContent.visualizationType === 'temperature' && <TemperatureControl />}
+                    {currentContent.visualizationType === 'context-window' && <ContextWindow />}
+                    {currentContent.visualizationType === 'roi-calculator' && <ROICalculator />}
+                    {currentContent.visualizationType === 'greenhouse-control' && <GreenhouseControl />}
+                    {currentContent.visualizationType === 'ai-taxonomy-flowchart' && <AITaxonomyFlowchart />}
+                    {currentContent.visualizationType === 'generative-ai-modalities-flowchart' && <GenerativeAIModalitiesFlowchart />}
+                    {currentContent.visualizationType === 'prompt-examples' && <PromptExamples />}
+                    {currentContent.visualizationType === 'ai-greenhouse-demo' && <AIGreenhouseDemo />}
+                    {currentContent.visualizationType === 'document-processing-demo' && <DocumentProcessingDemo />}
+                    {currentContent.visualizationType === 'digital-twin-ai-demo' && <DigitalTwinAIDemo />}
+                    {currentContent.visualizationType === 'resource-dashboard' && (
+                      <div className="text-center py-12">
+                        <div className="text-6xl mb-4">📊</div>
+                        <p className="text-blue-800 font-semibold">
+                          Resource Dashboard Visualization
+                        </p>
+                        <p className="text-blue-600 text-sm mt-2">
+                          [Coming soon - Real-time resource monitoring]
+                        </p>
+                      </div>
+                    )}
+                    {currentContent.visualizationType === 'digital-twin' && (
+                      <div className="text-center py-12">
+                        <div className="text-6xl mb-4">🏭</div>
+                        <p className="text-blue-800 font-semibold">
+                          Digital Twin Visualization
+                        </p>
+                        <p className="text-blue-600 text-sm mt-2">
+                          [Coming soon - Virtual greenhouse replica]
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Demo Slide */}
+              {currentContent.type === 'demo' && (
+                <div className="flex-1 flex flex-col">
+                  <h2 className="text-4xl font-tanker text-marble-900 mb-6">
+                    <Monitor className="inline w-10 h-10 text-green-500 mr-3" />
+                    {currentContent.title}
+                  </h2>
+                  <p className="text-xl font-hind text-marble-700 mb-8">{currentContent.content}</p>
+                  
+                  <div className="flex-1 bg-green-50 rounded-lg p-12 border-2 border-dashed border-green-300 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-8xl mb-6">🖥️</div>
+                      <p className="text-green-800 font-semibold text-2xl">Live Demonstration</p>
+                      <p className="text-green-600 mt-3 text-lg">Switch to demo application</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Resources */}
+              {currentContent.resources && currentContent.resources.length > 0 && (
+                <div className="mt-8 p-4 bg-marble-50 rounded-lg">
+                  <h3 className="font-semibold text-marble-900 mb-2">Resources:</h3>
+                  <div className="space-y-1">
+                    {currentContent.resources.map((resource, index) => (
+                      <a
+                        key={index}
+                        href={resource.url}
+                        className="text-blue-600 hover:text-blue-800 text-sm block"
+                      >
+                        → {resource.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Speaker Notes (Presenter Mode) */}
+              {presenterMode && currentContent.speakerNotes && (
+                <div className="mt-auto pt-6">
+                  <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <h3 className="font-semibold text-yellow-900 mb-2 text-sm">Speaker Notes:</h3>
+                    <p className="text-yellow-800 text-sm">{currentContent.speakerNotes}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Navigation */}
+            {/* Navigation and Controls */}
             <div className="bg-marble-50 px-8 py-4 border-t border-marble-200">
               <div className="flex items-center justify-between">
                 <button
@@ -341,20 +586,20 @@ export default function ContinueModulePage({ params }: PageProps) {
                 
                 <div className="flex items-center space-x-4">
                   <span className="text-sm text-marble-600">
-                    {currentSlide + 1} of {courseContent.length}
+                    {currentSlide + 1} of {workshopSlides.length}
                   </span>
-                  {isQuiz && (
-                    <span className="text-sm text-orange-600 font-medium">
-                      Quiz {Math.floor(currentSlide / 3) + 1}
+                  {currentContent.estimatedTime && (
+                    <span className="text-xs text-marble-500">
+                      Est: {Math.round(currentContent.estimatedTime / 60)} min
                     </span>
                   )}
                 </div>
                 
                 <button
                   onClick={handleNext}
-                  disabled={currentSlide === courseContent.length - 1}
+                  disabled={currentSlide === workshopSlides.length - 1}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                    currentSlide === courseContent.length - 1
+                    currentSlide === workshopSlides.length - 1
                       ? 'text-marble-400 cursor-not-allowed'
                       : 'text-marble-700 hover:bg-marble-200'
                   }`}
@@ -363,11 +608,39 @@ export default function ContinueModulePage({ params }: PageProps) {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Slide Dots Navigation */}
+              {presenterMode && (
+                <div className="mt-4 flex justify-center space-x-1 overflow-x-auto">
+                  {workshopSlides.map((slide, index) => (
+                    <button
+                      key={slide.id}
+                      onClick={() => handleSlideJump(index)}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentSlide
+                          ? `bg-${sectionColor}-500 w-8`
+                          : slide.sectionId === currentContent.sectionId
+                          ? `bg-${sectionColor}-300 hover:bg-${sectionColor}-400`
+                          : 'bg-marble-300 hover:bg-marble-400'
+                      }`}
+                      title={`${slide.title} (${slide.sectionName})`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Keyboard shortcuts hint */}
+          {presenterMode && (
+            <div className="mt-4 text-center text-xs text-marble-500">
+              ← → Navigate slides · Space: Start/Stop timer · Ctrl+F: Toggle presenter mode
+            </div>
+          )}
         </div>
       </div>
+      
       <JoinSessionModal isOpen={joinOpen} onJoined={onJoined} />
     </>
   )
-} 
+}
